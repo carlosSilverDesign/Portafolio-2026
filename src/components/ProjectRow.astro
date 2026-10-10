@@ -4,12 +4,26 @@ import { ArrowUpRight } from '@lucide/astro';
 interface Props {
   index: number;
   title: string;
+  headline?: string;
   category?: string;
   timeline?: string;
+  tags?: string[];
   href: string;
+  /** Texto accesible (sr-only) que avisa que el enlace abre una pestaña nueva. */
+  newTabLabel?: string;
 }
 
-const { index, title, category, timeline, href } = Astro.props;
+const {
+  index,
+  title,
+  headline,
+  category,
+  timeline,
+  tags = [],
+  href,
+  newTabLabel = '(opens in a new tab)',
+} = Astro.props;
+
 const formattedIndex = index.toString().padStart(2, '0');
 ---
 
@@ -17,30 +31,51 @@ const formattedIndex = index.toString().padStart(2, '0');
   href={href}
   target="_blank"
   rel="noopener noreferrer"
-  class="group relative flex items-center justify-between py-5 px-3 -mx-3 rounded-lg border-b border-[var(--color-border-subtle)] transition-all duration-300 hover:bg-[var(--color-surface-subtle)]"
+  class="group relative grid grid-cols-[2.5rem_minmax(0,1fr)_auto] md:grid-cols-[4rem_minmax(0,1fr)_auto] items-start md:items-center gap-4 md:gap-6 py-7 md:py-9 px-4 -mx-4 rounded-2xl border-b border-border-subtle transition-all duration-300 hover:bg-accent-blue-subtle/45 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-blue"
 >
-  <div class="flex items-center gap-6 md:gap-8">
-    <span class="font-mono text-xs text-[var(--color-ink-muted)] group-hover:text-black transition-colors">
-      {formattedIndex}
-    </span>
-    <span class="text-base sm:text-lg font-medium tracking-tight group-hover:translate-x-1.5 transition-transform duration-300 ease-[var(--ease-snappy)]">
-      {title}
-    </span>
-  </div>
+  <span class="font-mono text-xs font-bold text-accent-blue pt-1 md:pt-0">
+    {formattedIndex}
+  </span>
 
-  <div class="flex items-center gap-4">
-    {category && (
-      <span class="hidden sm:inline-block text-xs font-mono text-[var(--color-ink-secondary)]">
-        {category}
+  <span class="min-w-0 space-y-2">
+    <span class="flex flex-wrap items-center gap-2.5">
+      <span class="text-xl md:text-[32px] font-bold leading-[1] tracking-[-0.03em] text-ink-primary transition-transform duration-300 ease-[var(--ease-snappy)] group-hover:translate-x-1">
+        {title}
+      </span>
+      {category && (
+        <span class="inline-block rounded-full border border-accent-blue-border bg-accent-blue-subtle px-3 py-0.5 font-mono text-[11px] font-medium text-accent-blue">
+          {category}
+        </span>
+      )}
+    </span>
+
+    {headline && (
+      <span class="block text-sm sm:text-base text-ink-secondary leading-snug max-w-2xl">
+        {headline}
       </span>
     )}
+
+    {tags.length > 0 && (
+      <span class="hidden sm:flex flex-wrap items-center gap-1.5 pt-1">
+        {tags.slice(0, 4).map((tag) => (
+          <span class="rounded-full bg-surface border border-border-subtle px-2.5 py-0.5 font-mono text-[10px] text-ink-muted">
+            {tag}
+          </span>
+        ))}
+      </span>
+    )}
+  </span>
+
+  <span class="flex items-center gap-4 md:gap-6 self-center">
     {timeline && (
-      <span class="hidden md:inline-block text-xs font-mono text-[var(--color-ink-muted)]">
+      <span class="hidden md:inline-block font-mono text-xs text-ink-muted whitespace-nowrap">
         {timeline}
       </span>
     )}
-    <div class="p-1 rounded-full border border-transparent group-hover:border-[var(--color-border-subtle)] group-hover:bg-white transition-all">
-      <ArrowUpRight class="w-4 h-4 text-[var(--color-ink-muted)] group-hover:text-black group-hover:rotate-45 transition-all duration-300" />
-    </div>
-  </div>
+    <span class="grid size-10 place-items-center rounded-full border border-border-subtle bg-surface transition-all duration-300 group-hover:border-accent-blue group-hover:bg-accent-blue">
+      <ArrowUpRight class="size-4 text-ink-secondary transition-all duration-300 group-hover:rotate-45 group-hover:text-white" aria-hidden="true" />
+    </span>
+  </span>
+
+  <span class="sr-only">{newTabLabel}</span>
 </a>

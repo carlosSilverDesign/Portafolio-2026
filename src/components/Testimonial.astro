@@ -1,4 +1,6 @@
 ---
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
 interface Props {
   quote?: string;
   author?: string;
@@ -7,17 +9,49 @@ interface Props {
 }
 
 const { quote, author, title, date } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
 if (!quote || !author) return null;
+
+const initials = author
+  .split(' ')
+  .map((part) => part[0])
+  .join('')
+  .slice(0, 2)
+  .toUpperCase();
 ---
 
-<section id="voices" class="my-16 p-8 rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface)] relative overflow-hidden">
-  <div class="font-serif text-6xl text-neutral-200 absolute top-4 right-6 select-none leading-none">”</div>
-  {date && <p class="font-mono text-xs text-[var(--color-ink-muted)] mb-4">{date}</p>}
-  <blockquote class="text-base sm:text-lg leading-relaxed text-[var(--color-ink-primary)] mb-6 relative z-10">
-    "{quote}"
-  </blockquote>
-  <div>
-    <p class="font-medium text-sm text-[var(--color-ink-primary)]">{author}</p>
-    {title && <p class="text-xs font-mono text-[var(--color-ink-secondary)]">{title}</p>}
+<section
+  id="voices"
+  class="scroll-mt-24 rounded-[24px] border border-border-subtle bg-surface p-6 sm:p-8 flex flex-col justify-between h-full"
+>
+  <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-ink-primary mb-4">
+    {t('case.nav.voices')}
+  </h2>
+
+  <div class="relative rounded-2xl border border-border-subtle bg-canvas p-6 flex-1 flex flex-col justify-between overflow-hidden">
+    <div
+      aria-hidden="true"
+      class="font-serif text-7xl text-accent-blue-border/70 absolute top-2 right-5 select-none leading-none"
+    >
+      ”
+    </div>
+
+    {date && <p class="font-mono text-[11px] text-ink-muted mb-3">{date}</p>}
+
+    <blockquote class="text-sm sm:text-[15px] leading-relaxed text-ink-secondary mb-6 relative z-10">
+      “{quote}”
+    </blockquote>
+
+    <div class="flex items-center gap-3 pt-2 border-t border-border-subtle/70">
+      <div class="grid size-10 shrink-0 place-items-center rounded-xl bg-accent-blue-subtle border border-accent-blue-border font-mono text-xs font-bold text-accent-blue">
+        {initials}
+      </div>
+      <div>
+        <p class="font-bold text-sm text-ink-primary leading-tight">{author}</p>
+        {title && <p class="text-xs text-ink-secondary">{title}</p>}
+      </div>
+    </div>
   </div>
 </section>

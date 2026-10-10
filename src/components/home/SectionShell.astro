@@ -1,0 +1,44 @@
+---
+/**
+ * Contenedor editorial de sección (ritmo Mitacore):
+ * micro-etiqueta lateral en azul (columna estrecha) + contenido (columna fluida).
+ */
+interface Props {
+  id?: string;
+  kicker: string;
+  title?: string;
+  /** Usado como aria-label cuando la sección no tiene título visible. */
+  ariaLabel?: string;
+  class?: string;
+}
+
+const { id, kicker, title, ariaLabel, class: className } = Astro.props;
+const titleId = title ? `${id ?? kicker.toLowerCase().replace(/\s+/g, '-')}-title` : undefined;
+---
+
+<section
+  id={id}
+  aria-labelledby={titleId}
+  aria-label={titleId ? undefined : ariaLabel}
+  class:list={[
+    'grid grid-cols-1 md:grid-cols-[minmax(110px,13%)_minmax(0,1fr)] gap-6 md:gap-12 lg:gap-16 py-14 md:py-24',
+    className,
+  ]}
+>
+  <p class="section-kicker md:pt-4">{kicker}</p>
+
+  <div class="min-w-0">
+    {title && (
+      <div class="flex items-end justify-between gap-6 mb-10 md:mb-14">
+        <h2
+          id={titleId}
+          class="text-[clamp(2.5rem,5.2vw,4.75rem)] font-bold leading-[0.9] tracking-[-0.04em] text-ink-primary"
+        >
+          {title}
+        </h2>
+        <slot name="title-aside" />
+      </div>
+    )}
+    <slot />
+  </div>
+</section>

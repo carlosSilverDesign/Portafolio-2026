@@ -1,0 +1,33 @@
+---
+import SectionShell from './SectionShell.astro';
+import { useTranslations } from '../../i18n/utils';
+import type { SupportedLanguage, UIKey } from '../../i18n/ui';
+
+interface Props {
+  lang: SupportedLanguage;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const stats = [1, 2, 3, 4].map((n) => ({
+  value: t(`numbers.${n}.value` as UIKey),
+  label: t(`numbers.${n}.label` as UIKey),
+}));
+---
+
+<SectionShell id="numeros" kicker={t('numbers.kicker')} ariaLabel={t('numbers.aria')}>
+  <!-- flex-col-reverse: el <dt> va primero en el DOM (semántica) pero el valor se ve arriba -->
+  <dl class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2.5">
+    {stats.map(({ value, label }) => (
+      <div class="flex flex-col-reverse justify-between gap-10 min-h-[170px] md:min-h-[210px] p-6 md:p-8 rounded-[20px] bg-blue-50/40 border border-blue-100/60">
+        <dt class="max-w-[16ch] text-lg md:text-xl font-bold leading-[1.05] tracking-[-0.01em] text-ink-primary">
+          {label}
+        </dt>
+        <dd class="text-[clamp(3rem,5.4vw,5.5rem)] font-bold leading-[0.85] tracking-[-0.045em] text-accent-blue tabular-nums">
+          {value}
+        </dd>
+      </div>
+    ))}
+  </dl>
+</SectionShell>

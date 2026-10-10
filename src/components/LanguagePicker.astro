@@ -6,26 +6,29 @@ const currentLang = getLangFromUrl(Astro.url);
 const currentPath = Astro.url.pathname;
 ---
 
-<nav aria-label="Language Selector" class="inline-flex items-center gap-1 p-1 bg-neutral-100/80 rounded-full border border-neutral-200 text-xs font-mono">
+<div role="group" aria-label="Language Selector" class="inline-flex items-center gap-1.5 text-[12px] sm:text-[13px] font-bold leading-none">
   {
-    Object.entries(languages).map(([langKey, label]) => {
+    Object.entries(languages).map(([langKey, label], idx) => {
       const isActive = currentLang === langKey;
       const targetUrl = getLocalizedPath(currentPath, langKey as SupportedLanguage);
 
       return (
-        <a
-          href={targetUrl}
-          class:list={[
-            "px-2.5 py-0.5 rounded-full transition-all duration-200 select-none",
-            isActive
-              ? "bg-[var(--color-ink-primary)] text-white font-medium shadow-xs"
-              : "text-neutral-500 hover:text-neutral-900"
-          ]}
-          aria-current={isActive ? "page" : undefined}
-        >
-          {label}
-        </a>
+        <>
+          {idx > 0 && <span class="text-border-subtle font-normal select-none" aria-hidden="true">/</span>}
+          <a
+            href={targetUrl}
+            class:list={[
+              'transition-colors duration-200 select-none',
+              isActive
+                ? 'text-accent-blue'
+                : 'text-ink-muted hover:text-ink-primary',
+            ]}
+            aria-current={isActive ? 'page' : undefined}
+          >
+            {label}
+          </a>
+        </>
       );
     })
   }
-</nav>
+</div>

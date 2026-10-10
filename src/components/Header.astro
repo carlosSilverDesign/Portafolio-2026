@@ -27,7 +27,7 @@ const { email = "tu-correo@ejemplo.com" } = Astro.props;
         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--color-accent-emerald)] opacity-75"></span>
         <span class="relative inline-flex rounded-full h-2 w-2 bg-[var(--color-accent-emerald)]"></span>
       </span>
-      <span class="text-[var(--color-ink-secondary)]">{t('status.available')}</span>
+      <span class="text-[var(--color-ink-secondary)]">{t('nav.available')}</span>
     </div>
 
     <!-- Selector de Idioma -->
@@ -38,10 +38,10 @@ const { email = "tu-correo@ejemplo.com" } = Astro.props;
       id="copy-email-btn"
       data-email={email}
       class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[var(--color-border-subtle)] bg-[var(--color-surface)] text-xs font-mono hover:border-black transition-colors cursor-pointer"
-      title={t('footer.copyEmail')}
+      title={t('nav.copyEmail')}
     >
       <Copy class="w-3.5 h-3.5 text-[var(--color-ink-muted)] group-hover:text-black transition-colors" />
-      <span id="copy-email-text" class="text-[var(--color-ink-secondary)] group-hover:text-black">{t('footer.copyEmail')}</span>
+      <span id="copy-email-text" class="text-[var(--color-ink-secondary)] group-hover:text-black">{t('nav.copyEmail')}</span>
     </button>
   </div>
 </header>

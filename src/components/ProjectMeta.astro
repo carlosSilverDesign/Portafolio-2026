@@ -11,28 +11,27 @@ const { client, timeline, role } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-// Si no hay datos, no renderiza nada
 const hasMeta = Boolean(client || timeline || role);
 ---
 
 {hasMeta && (
-  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 py-6 border-y border-[var(--color-border-subtle)] font-mono text-xs">
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 my-6">
     {client && (
-      <div>
-        <p class="text-[var(--color-ink-muted)] uppercase tracking-wider mb-1">{t('case.project')}</p>
-        <p class="font-medium text-sm text-[var(--color-ink-primary)] font-sans">{client}</p>
+      <div class="rounded-2xl border border-border-subtle bg-canvas px-5 py-4">
+        <p class="font-mono text-[11px] uppercase tracking-wider text-ink-muted mb-1">{t('case.project')}</p>
+        <p class="font-bold text-sm sm:text-base text-ink-primary">{client}</p>
       </div>
     )}
     {timeline && (
-      <div>
-        <p class="text-[var(--color-ink-muted)] uppercase tracking-wider mb-1">{t('case.timeline')}</p>
-        <p class="font-medium text-sm text-[var(--color-ink-primary)] font-sans">{timeline}</p>
+      <div class="rounded-2xl border border-border-subtle bg-canvas px-5 py-4">
+        <p class="font-mono text-[11px] uppercase tracking-wider text-ink-muted mb-1">{t('case.timeline')}</p>
+        <p class="font-bold text-sm sm:text-base text-ink-primary">{timeline}</p>
       </div>
     )}
     {role && (
-      <div>
-        <p class="text-[var(--color-ink-muted)] uppercase tracking-wider mb-1">{t('case.role')}</p>
-        <p class="font-medium text-sm text-[var(--color-ink-primary)] font-sans">{role}</p>
+      <div class="rounded-2xl border border-border-subtle bg-canvas px-5 py-4">
+        <p class="font-mono text-[11px] uppercase tracking-wider text-ink-muted mb-1">{t('case.role')}</p>
+        <p class="font-bold text-sm sm:text-base text-ink-primary">{role}</p>
       </div>
     )}
   </div>

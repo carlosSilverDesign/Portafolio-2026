@@ -1,4 +1,4 @@
-import { ui, defaultLang, type SupportedLanguage } from './ui';
+import { ui, defaultLang, type SupportedLanguage, type UIKey } from './ui';
 
 export function getLangFromUrl(url: URL): SupportedLanguage {
   const [, lang] = url.pathname.split('/');
@@ -7,10 +7,12 @@ export function getLangFromUrl(url: URL): SupportedLanguage {
 }
 
 export function useTranslations(lang: SupportedLanguage) {
-  return function t(key: keyof (typeof ui)[typeof defaultLang]): string {
+  return function t(key: UIKey): string {
     return ui[lang][key] || ui[defaultLang][key];
   };
 }
+
+export type Translator = ReturnType<typeof useTranslations>;
 
 export function getLocalizedPath(pathname: string, targetLang: SupportedLanguage): string {
   const segments = pathname.split('/').filter(Boolean);

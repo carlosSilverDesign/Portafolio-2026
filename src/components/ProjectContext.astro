@@ -2,39 +2,121 @@
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
 
 interface Props {
+  title?: string;
+  category?: string;
+  heroImage?: string;
   overview?: string;
+  overviewParagraphs?: string[];
   toolsAndMethods?: string[];
   team?: string[];
 }
 
-const { overview, toolsAndMethods, team } = Astro.props;
+const {
+  title = '',
+  category = '',
+  heroImage,
+  overview,
+  overviewParagraphs,
+  toolsAndMethods,
+  team,
+} = Astro.props;
+
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+
+const paragraphs = overviewParagraphs && overviewParagraphs.length > 0
+  ? overviewParagraphs
+  : overview
+    ? [overview]
+    : [];
+
+const isFintech = category.toLowerCase().includes('fintech') || title.toLowerCase().includes('nova');
 ---
 
-<div class="space-y-8 my-10">
-  {overview && (
-    <div class="space-y-3">
-      <h3 class="font-mono text-xs uppercase tracking-wider text-[var(--color-ink-muted)]">
-        {t('case.overview')}
-      </h3>
-      <p class="text-base sm:text-lg leading-relaxed text-[var(--color-ink-secondary)]">
-        {overview}
-      </p>
+<div class="space-y-6 mt-6">
+  {paragraphs.length > 0 && (
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+      <!-- Columna izquierda: Overview narrativo -->
+      <div class="lg:col-span-7 space-y-3.5 flex flex-col justify-center">
+        <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-ink-primary">
+          {t('case.overview')}
+        </h2>
+        <div class="space-y-3.5 text-sm sm:text-[15px] leading-relaxed text-ink-secondary">
+          {paragraphs.map((p) => (
+            <p>{p}</p>
+          ))}
+        </div>
+      </div>
+
+      <!-- Columna derecha: Mockup visual del producto -->
+      <div class="lg:col-span-5 rounded-2xl border border-accent-blue-border/80 bg-accent-blue-subtle/50 p-5 flex items-center justify-center min-h-[230px] overflow-hidden">
+        {heroImage ? (
+          <img
+            src={heroImage}
+            alt={title}
+            class="w-full h-full object-cover rounded-xl"
+            loading="eager"
+          />
+        ) : isFintech ? (
+          <div class="w-full max-w-[290px] rounded-xl bg-surface border border-border-subtle shadow-sm p-4 space-y-3">
+            <div class="flex items-center justify-between border-b border-border-subtle pb-2.5">
+              <span class="font-mono text-[10px] uppercase tracking-wider text-accent-blue font-semibold">Treasury · Live</span>
+              <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 font-mono text-[10px] text-emerald-700">● Instant FX</span>
+            </div>
+            <div>
+              <p class="font-mono text-[10px] text-ink-muted">Liquidity Pool (USD / PEN / EUR)</p>
+              <p class="text-2xl font-bold tracking-tight text-ink-primary tabular-nums">$1,482,900.00</p>
+            </div>
+            <div class="grid grid-cols-3 gap-2 pt-1">
+              <div class="rounded-lg bg-accent-blue-subtle p-2">
+                <p class="font-mono text-[9px] text-accent-blue">T+0 Settlement</p>
+                <p class="text-xs font-bold text-ink-primary">99.4%</p>
+              </div>
+              <div class="rounded-lg bg-canvas p-2 border border-border-subtle">
+                <p class="font-mono text-[9px] text-ink-muted">Fee Saved</p>
+                <p class="text-xs font-bold text-ink-primary">-62 bps</p>
+              </div>
+              <div class="rounded-lg bg-canvas p-2 border border-border-subtle">
+                <p class="font-mono text-[9px] text-ink-muted">Batch API</p>
+                <p class="text-xs font-bold text-ink-primary">140 ms</p>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div class="w-[170px] rounded-[24px] border-4 border-ink-primary bg-surface shadow-md p-3 space-y-2.5">
+            <div class="mx-auto h-1 w-10 rounded-full bg-border-subtle"></div>
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-[9px] font-bold text-accent-blue">petinder.online</span>
+              <span class="rounded-full bg-accent-blue-subtle px-1.5 py-0.5 font-mono text-[8px] text-accent-blue">3 filters</span>
+            </div>
+            <div class="rounded-xl bg-accent-blue-subtle/80 border border-accent-blue-border p-2.5 space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold text-ink-primary">Luna · 2 yrs</span>
+                <span class="rounded-full bg-white px-1.5 py-0.5 font-mono text-[8px] text-accent-blue">Match 96%</span>
+              </div>
+              <p class="text-[9px] text-ink-secondary leading-tight">Medium · Good with kids · Tallinn Shelter</p>
+            </div>
+            <div class="grid grid-cols-2 gap-1.5">
+              <div class="rounded-lg bg-canvas border border-border-subtle px-2 py-1 text-[8px] font-mono text-ink-secondary">✓ Age: 1–3y</div>
+              <div class="rounded-lg bg-canvas border border-border-subtle px-2 py-1 text-[8px] font-mono text-ink-secondary">✓ Verified</div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )}
 
   {(toolsAndMethods?.length || team?.length) && (
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       {toolsAndMethods && toolsAndMethods.length > 0 && (
-        <div class="p-6 rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface)]">
-          <h4 class="font-mono text-xs uppercase tracking-wider text-[var(--color-ink-muted)] mb-4">
+        <div class="p-6 rounded-2xl border border-accent-blue-border bg-accent-blue-subtle/75">
+          <h3 class="font-mono text-xs font-semibold uppercase tracking-wider text-accent-blue mb-3">
             {t('case.tools')}
-          </h4>
-          <ul class="space-y-2 text-sm text-[var(--color-ink-secondary)]">
+          </h3>
+          <ul class="space-y-2 text-sm text-ink-primary">
             {toolsAndMethods.map((tool) => (
               <li class="flex items-start gap-2">
-                <span class="text-[var(--color-ink-primary)] select-none">•</span>
+                <span class="text-accent-blue font-bold select-none">•</span>
                 <span>{tool}</span>
               </li>
             ))}
@@ -43,14 +125,14 @@ const t = useTranslations(lang);
       )}
 
       {team && team.length > 0 && (
-        <div class="p-6 rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface)]">
-          <h4 class="font-mono text-xs uppercase tracking-wider text-[var(--color-ink-muted)] mb-4">
+        <div class="p-6 rounded-2xl border border-border-subtle bg-canvas">
+          <h3 class="font-mono text-xs font-semibold uppercase tracking-wider text-ink-muted mb-3">
             {t('case.team')}
-          </h4>
-          <ul class="space-y-2 text-sm text-[var(--color-ink-secondary)]">
+          </h3>
+          <ul class="space-y-2 text-sm text-ink-secondary">
             {team.map((member) => (
               <li class="flex items-start gap-2">
-                <span class="text-[var(--color-ink-primary)] select-none">•</span>
+                <span class="text-ink-primary font-bold select-none">•</span>
                 <span>{member}</span>
               </li>
             ))}

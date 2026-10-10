@@ -1,0 +1,121 @@
+---
+import { ArrowUpRight, Copy, Check, FileDown, MapPin } from '@lucide/astro';
+import { useTranslations } from '../../i18n/utils';
+import type { SupportedLanguage } from '../../i18n/ui';
+import { site } from '../../config/site';
+
+interface Props {
+  lang: SupportedLanguage;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const linkBase =
+  'group inline-flex items-center gap-2 text-xl md:text-2xl font-bold leading-none tracking-[-0.02em] text-ink-primary transition-colors hover:text-accent-blue';
+---
+
+<section
+  id="contacto"
+  aria-labelledby="contact-title"
+  class="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(0,auto)] gap-12 md:gap-16 items-end pt-20 pb-16 md:pt-32 md:pb-24"
+>
+  <div>
+    <p class="section-kicker mb-6">{t('contact.kicker')}</p>
+    <h2
+      id="contact-title"
+      class="text-[clamp(4.5rem,14vw,10rem)] font-bold leading-[0.82] tracking-[-0.055em] text-ink-primary"
+    >
+      {t('contact.title')}
+    </h2>
+  </div>
+
+  <ul class="flex flex-col items-start md:items-end gap-5 md:text-right">
+    <!-- Email: mailto + acción de copiar -->
+    <li class="flex items-center gap-3">
+      <a
+        href={`mailto:${site.email}`}
+        class="text-xl md:text-[28px] font-bold leading-none tracking-[-0.025em] bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-500 bg-clip-text text-transparent pb-[0.1em]"
+      >
+        {site.email}
+      </a>
+      <button
+        type="button"
+        data-copy-email={site.email}
+        data-label-copy={t('contact.copyEmail')}
+        data-label-copied={t('contact.emailCopied')}
+        aria-label={t('contact.copyEmail')}
+        title={t('contact.copyEmail')}
+        class="group/copy grid size-9 shrink-0 cursor-pointer place-items-center rounded-full border border-accent-blue-border bg-accent-blue-subtle text-accent-blue transition-colors hover:bg-accent-blue hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-blue"
+      >
+        <Copy class="size-4 group-data-[copied]/copy:hidden" aria-hidden="true" />
+        <Check class="hidden size-4 group-data-[copied]/copy:block" aria-hidden="true" />
+      </button>
+      <span class="sr-only" aria-live="polite" data-copy-status></span>
+    </li>
+
+    <li>
+      <a href={site.linkedinUrl} target="_blank" rel="noopener noreferrer" class={linkBase}>
+        <span>{t('contact.linkedin')}</span>
+        <ArrowUpRight class="size-5 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
+        <span class="sr-only">{t('projects.newTab')}</span>
+      </a>
+    </li>
+
+    <li>
+      <a href={site.cvUrl} download class={linkBase}>
+        <span>{t('contact.cv')}</span>
+        <FileDown class="size-5 transition-transform duration-300 group-hover:translate-y-0.5" aria-hidden="true" />
+      </a>
+    </li>
+
+    <li class="flex items-center gap-2 font-mono text-xs text-ink-secondary">
+      <MapPin class="size-3.5 text-accent-blue" aria-hidden="true" />
+      <span>{site.location} · {site.utcOffsetLabel}</span>
+      <span aria-hidden="true">·</span>
+      <span>
+        <span class="sr-only">{t('contact.localTime')}: </span>
+        <time data-local-clock data-tz={site.timeZone} data-lang={lang}>--:--</time>
+      </span>
+    </li>
+  </ul>
+</section>
+
+<script>
+  // Copiar email con feedback visual (icono) y accesible (aria-live)
+  document.querySelectorAll<HTMLButtonElement>('[data-copy-email]').forEach((btn) => {
+    const status = btn.parentElement?.querySelector<HTMLElement>('[data-copy-status]');
+    let timer: number | undefined;
+
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copyEmail ?? '');
+        btn.dataset.copied = '';
+        btn.setAttribute('aria-label', btn.dataset.labelCopied ?? '');
+        if (status) status.textContent = btn.dataset.labelCopied ?? '';
+        window.clearTimeout(timer);
+        timer = window.setTimeout(() => {
+          delete btn.dataset.copied;
+          btn.setAttribute('aria-label', btn.dataset.labelCopy ?? '');
+          if (status) status.textContent = '';
+        }, 2000);
+      } catch (err) {
+        console.error('Clipboard error:', err);
+      }
+    });
+  });
+
+  // Reloj en la zona horaria de trabajo
+  document.querySelectorAll<HTMLTimeElement>('[data-local-clock]').forEach((el) => {
+    const fmt = new Intl.DateTimeFormat(el.dataset.lang === 'en' ? 'en-US' : 'es-PE', {
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone: el.dataset.tz,
+    });
+    const tick = () => {
+      el.textContent = fmt.format(new Date());
+    };
+    tick();
+    window.setInterval(tick, 30_000);
+  });
+</script>

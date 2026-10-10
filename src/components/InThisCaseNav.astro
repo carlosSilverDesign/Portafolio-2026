@@ -26,23 +26,64 @@ const items = [
   { id: 'scalable-design-system', label: t('case.nav.system'), exists: Boolean(inThisCase.designSystem) },
   { id: 'outcome', label: t('case.nav.outcome'), exists: Boolean(inThisCase.outcome) },
   { id: 'voices', label: t('case.nav.voices'), exists: hasTestimonial },
-].filter(item => item.exists);
+].filter((item) => item.exists);
 ---
 
 {items.length > 0 && (
-  <nav aria-label="Secciones del proyecto" class="my-10 p-5 rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface)]">
-    <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-ink-muted)] mb-3">
-      {t('case.nav.title')}
-    </p>
-    <div class="flex flex-wrap gap-2">
-      {items.map(item => (
-        <a
-          href={`#${item.id}`}
-          class="px-3 py-1 rounded-full text-xs font-mono border border-[var(--color-border-subtle)] hover:border-black hover:bg-neutral-100 transition-colors"
-        >
-          {item.label}
-        </a>
-      ))}
-    </div>
-  </nav>
+  <aside class="lg:sticky lg:top-24">
+    <nav
+      data-case-nav
+      aria-label={t('case.nav.title')}
+      class="p-5 rounded-2xl border border-border-subtle bg-surface"
+    >
+      <p class="text-sm font-bold tracking-tight text-ink-primary mb-3">
+        {t('case.nav.title')}
+      </p>
+      <ul class="flex flex-wrap lg:flex-col gap-1.5">
+        {items.map((item, idx) => (
+          <li>
+            <a
+              href={`#${item.id}`}
+              data-case-link={item.id}
+              class:list={[
+                'block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors',
+                idx === 0
+                  ? 'bg-accent-blue-subtle text-accent-blue font-semibold'
+                  : 'text-ink-secondary hover:text-ink-primary hover:bg-canvas',
+              ]}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </aside>
 )}
+
+<script>
+  const caseLinks = [...document.querySelectorAll<HTMLAnchorElement>('[data-case-link]')];
+  const caseSections = caseLinks
+    .map((link) => document.getElementById(link.dataset.caseLink ?? ''))
+    .filter((el): el is HTMLElement => Boolean(el));
+
+  if (caseLinks.length && caseSections.length) {
+    const updateCaseNav = () => {
+      const pivot = window.innerHeight * 0.35;
+      const current = caseSections.reduce((active, section) => {
+        return section.getBoundingClientRect().top <= pivot ? section : active;
+      }, caseSections[0]);
+
+      caseLinks.forEach((link) => {
+        const isActive = link.dataset.caseLink === current.id;
+        link.classList.toggle('bg-accent-blue-subtle', isActive);
+        link.classList.toggle('text-accent-blue', isActive);
+        link.classList.toggle('font-semibold', isActive);
+        link.classList.toggle('text-ink-secondary', !isActive);
+      });
+    };
+
+    window.addEventListener('scroll', updateCaseNav, { passive: true });
+    updateCaseNav();
+  }
+</script>

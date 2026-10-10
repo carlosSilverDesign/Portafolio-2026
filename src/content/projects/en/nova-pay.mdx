@@ -1,0 +1,118 @@
+---
+title: "NovaPay Treasury"
+headline: "Reducing Multi-Currency Batch Payout Friction by 64% for CFO Teams"
+order: 2
+category: "Fintech · B2B SaaS"
+tags:
+  - "Product Architecture"
+  - "B2B Treasury UX"
+  - "Design System & Tokens"
+  - "Astro & TypeScript"
+  - "Usability Testing"
+
+meta:
+  client: "NovaPay Financial (Reference Case)"
+  timeline: "Jan – Jun 2025"
+  role: "Lead Product Designer & UI Architect"
+
+overview: "NovaPay is a cross-border B2B treasury and instant settlement platform built for mid-market finance teams operating across USD, EUR, MXN, and PEN corridors."
+overviewParagraphs:
+  - "NovaPay is a cross-border B2B treasury and instant settlement platform built for finance teams operating across USD, EUR, MXN, and PEN corridors."
+  - "The core problem was operational risk: CFOs and controllers were managing 100+ international vendor payouts via brittle CSV uploads and multi-step modal confirmations that hid real-time FX spreads until the final step."
+  - "As Lead Product Designer & UI Architect, I redesigned the batch payout engine, introduced a real-time inline FX lock workflow, and delivered the production component architecture."
+
+toolsAndMethods:
+  - "Figma + Token Studio: High-density financial UI system & dark/light parity"
+  - "Interactive prototype testing with 9 corporate controllers & CFOs"
+  - "Frontend Architecture: TypeScript, Tailwind CSS, accessible data tables"
+  - "Zero-ambiguity state machine specs for compliance & 2FA approvals"
+
+team:
+  - "1 Lead Product Designer & UI Architect"
+  - "1 Product Manager (Payments & Compliance)"
+  - "4 Full-Stack & Ledger Engineers"
+
+inThisCase:
+  showNav: true
+  problem: "Corporate finance teams executing weekly international payroll and supplier batches faced a 7-step wizard where FX rates expired mid-review. Any single beneficiary IBAN or tax-ID error forced the user to abort the entire batch and re-upload from scratch."
+  problemHighlight: "Controllers were spending 45+ minutes reconciling failed batch rows in external spreadsheets because the platform treated a 120-payment run as an all-or-nothing modal transaction."
+  problemClosing: "To win mid-market enterprise accounts, NovaPay needed a high-density, spreadsheet-fast workspace capable of validating beneficiary compliance inline, locking FX rates transparently, and supporting role-based dual approval."
+
+  approachTitle: "My Approach: Two POVs, One Ledger Flow"
+  approach: "We architected the payout workflow around the two roles involved in every corporate disbursement: the Treasury Operator preparing the batch and the CFO/Approver signing off on liquidity and FX exposure."
+  povs:
+    - title: "POV 1: Treasury Operator"
+      subtitle: "Inline error resolution without leaving the batch"
+      listTitle: "Key design decisions:"
+      items:
+        - "Split-pane validation grid flagging IBAN/SWIFT/RUC mismatches inline without blocking valid rows"
+        - "Partial batch execution: ship valid payouts immediately while queuing flagged rows for review"
+        - "Keyboard-first navigation (⌘K actions, arrow-key cell editing) for high-volume controllers"
+        - "Automated beneficiary bank routing lookup with instant fee breakdown"
+    - title: "POV 2: CFO & Approver"
+      subtitle: "Instant visibility into liquidity impact and FX spread"
+      listTitle: "Key design decisions:"
+      items:
+        - "Live 90-second FX quote lock bar showing guaranteed rate vs. mid-market benchmark"
+        - "Pre-flight liquidity summary comparing wallet balances before and after settlement"
+        - "One-tap hardware passkey / 2FA multi-signature approval drawer"
+
+  challengeTitle: "Core Challenge: Validating the Batch Review & FX Lock Architecture"
+  challengeHighlight: "Tested two batch-review architectures with 9 finance controllers: the inline split-inspector reduced error-recovery time by 64% compared to the legacy step-by-step wizard."
+  coreChallenge: "When a batch of 150 cross-border payments contains 4 compliance warnings and 3 currency corridors, how do you let the operator fix errors and lock FX quotes without losing sight of the total liquidity impact?"
+  options:
+    - title: "Option A: Persistent Split-Inspector + Live FX Bar"
+      recommended: true
+      items:
+        - "Sticky top liquidity & FX lock bar visible across the entire review"
+        - "Clicking a flagged row opens an inline side-drawer while keeping the table in view"
+        - "Instant recalculation of corridor totals as rows are toggled or edited"
+    - title: "Option B: Multi-step Wizard + Modal Row Editor"
+      items:
+        - "Sequential 5-step flow (Upload → Validate → FX Quote → Approve → Receipt)"
+        - "Row errors open a centered modal overlay blocking the batch table"
+        - "Requires stepping backward to adjust amounts if wallet liquidity is exceeded"
+  optionsCaption: "Why these two specifically: Enterprise fintech tools often default to wizards (Option B) for perceived safety, whereas experienced treasury operators need simultaneous context across rows and wallet balances (Option A)."
+  findings:
+    title: "Usability test findings: Why the split-inspector won"
+    items:
+      - "64% faster error resolution: Operators fixed 5 seeded compliance errors in 1m 40s vs. 4m 35s in the wizard."
+      - "Zero quote expirations: Keeping the FX countdown and corridor totals pinned prevented surprise rate refreshes."
+      - "Higher audit confidence: CFOs approved batches 2.1x faster with pre/post wallet deltas visible on a single screen."
+    note: "Validated across 9 moderated task-completion sessions with B2B controllers and finance leads."
+  retrospective:
+    title: "What I'd do differently"
+    text: "Involve compliance & AML legal reviewers earlier in the prototype phase so regulatory tooltip copy and KYB document upload states are co-designed alongside the core table interactions."
+
+  designSystem: "Financial interfaces demand tabular precision, unmistakable status semantics, and zero layout shift during live quote updates. I built a token-driven UI kit shared 1:1 between Figma and TypeScript."
+  systemTokens:
+    title: "Components and tokens defined"
+    items:
+      - "Tabular-numeral typography scale (`font-variant-numeric: tabular-nums`) for aligned currency columns"
+      - "Semantic status tokens for settlement states (Queued, FX Locked, Compliance Hold, Settled T+0)"
+      - "High-density data table primitives with sticky headers, bulk selection, and keyboard focus rings"
+      - "Audit-trail timeline and multi-signature approval drawer components"
+  systemBody: "Every Figma token mapped directly to CSS custom properties in Tailwind v4, allowing engineers to ship new treasury views without custom stylesheet overrides."
+  systemImpact:
+    title: "Impact"
+    text: "Achieved 1:1 visual parity between Figma and production while reducing frontend PR review cycles by 40%."
+
+  outcome: "Launched the redesigned batch treasury engine to production, powering multi-currency disbursements across 4 LATAM & EU corridors."
+  deliverables:
+    - "32+ production-grade screens covering onboarding, KYB, wallet funding, and batch payouts"
+    - "High-density financial Design System with 1:1 Figma-to-Tailwind CSS tokens"
+    - "Interactive validation prototypes & usability benchmark report"
+    - "Production frontend components for the batch inspector and FX quote lock bar"
+  deliveredLabel: "32+ screens · B2B Treasury Engine · 1:1 Code Delivery"
+
+testimonial:
+  quote: "They approached our treasury platform like a true product owner — cutting unnecessary wizard steps, validating the high-density table workflow with real CFOs, and delivering production-ready UI code that our engineers integrated immediately."
+  author: "Alejandro Vargas"
+  title: "VP of Product at NovaPay Financial"
+  date: "June 2025"
+
+nextProject:
+  slug: "petinder-online"
+  title: "Petinder.online — Maximizing Search Efficiency Through Filter Validation"
+  category: "Two-sided marketplace"
+---

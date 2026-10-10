@@ -5,14 +5,20 @@ import { getLangFromUrl, useTranslations } from '../i18n/utils';
 interface Props {
   title?: string;
   description?: string;
+  /**
+   * 'narrow' (por defecto): columna editorial de lectura para casos de estudio.
+   * 'wide': lienzo amplio estilo editorial para la One-Page.
+   */
+  width?: 'narrow' | 'wide';
 }
 
 const currentLang = getLangFromUrl(Astro.url);
 const t = useTranslations(currentLang);
 
-const { 
-  title = t('site.title'), 
-  description = "Minimalist Portfolio - Product Design & Architecture" 
+const {
+  title = t('meta.title'),
+  description = t('meta.description'),
+  width = 'narrow',
 } = Astro.props;
 ---
 
@@ -26,8 +32,16 @@ const {
     <title>{title}</title>
     <meta name="description" content={description} />
   </head>
-  <body class="min-h-screen bg-[var(--color-canvas)] text-[var(--color-ink-primary)] selection:bg-[var(--color-accent-volt)] selection:text-black">
-    <div class="max-w-4xl mx-auto px-6 py-12 md:py-20 flex flex-col min-h-screen justify-between">
+  <body class="min-h-screen bg-[var(--color-canvas)] text-[var(--color-ink-primary)] selection:bg-accent-blue selection:text-white">
+    <!-- Padding superior para compensar el Navbar fixed -->
+    <div
+      class:list={[
+        'mx-auto flex flex-col min-h-screen justify-between',
+        width === 'wide'
+          ? 'max-w-[1440px] px-5 sm:px-8 lg:px-12 pt-28 pb-10 md:pt-36'
+          : 'max-w-4xl px-6 pt-24 pb-16 md:pt-32 md:pb-24',
+      ]}
+    >
       <main class="w-full">
         <slot />
       </main>

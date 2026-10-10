@@ -1,0 +1,41 @@
+---
+import SectionShell from './SectionShell.astro';
+import { useTranslations } from '../../i18n/utils';
+import type { SupportedLanguage, UIKey } from '../../i18n/ui';
+
+interface Props {
+  lang: SupportedLanguage;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const services = [1, 2, 3, 4].map((n) => ({
+  index: n.toString().padStart(2, '0'),
+  title: t(`services.${n}.title` as UIKey),
+  items: [1, 2, 3, 4].map((i) => t(`services.${n}.item${i}` as UIKey)),
+}));
+---
+
+<SectionShell id="servicios" kicker={t('services.kicker')} title={t('services.title')}>
+  <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2.5">
+    {services.map(({ index, title, items }) => (
+      <article class="group flex flex-col justify-between gap-12 min-h-[300px] md:min-h-[340px] p-6 md:p-7 rounded-[20px] bg-surface border border-border-subtle transition-colors duration-300 hover:border-accent-blue-border">
+        <span class="font-mono text-xs text-accent-blue">{index}.</span>
+        <div>
+          <h3 class="mb-5 max-w-[12ch] text-[26px] md:text-[30px] font-bold leading-[0.95] tracking-[-0.03em] text-ink-primary">
+            {title}
+          </h3>
+          <ul class="grid gap-2">
+            {items.map((item) => (
+              <li class="flex gap-1.5 text-[15px] leading-snug text-ink-secondary">
+                <span aria-hidden="true" class="text-ink-primary">–</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </article>
+    ))}
+  </div>
+</SectionShell>

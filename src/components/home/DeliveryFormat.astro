@@ -1,0 +1,30 @@
+---
+import SectionShell from './SectionShell.astro';
+import { useTranslations } from '../../i18n/utils';
+import type { SupportedLanguage, UIKey } from '../../i18n/ui';
+
+interface Props {
+  lang: SupportedLanguage;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const outcomes = [1, 2, 3].map((n) => ({
+  index: n.toString().padStart(2, '0'),
+  text: t(`delivery.${n}` as UIKey),
+}));
+---
+
+<SectionShell id="formato" kicker={t('delivery.kicker')} title={t('delivery.title')}>
+  <ul class="grid grid-cols-1 md:grid-cols-3 gap-2.5 md:gap-4">
+    {outcomes.map(({ index, text }) => (
+      <li class="flex flex-col justify-between gap-12 min-h-[200px] md:min-h-[260px] p-6 md:p-8 rounded-[20px] bg-surface border border-border-subtle transition-colors duration-300 hover:border-accent-blue-border">
+        <span aria-hidden="true" class="font-mono text-xs text-accent-blue">{index}</span>
+        <p class="max-w-[18ch] text-2xl md:text-[26px] font-bold leading-[1.02] tracking-[-0.025em] text-ink-primary">
+          {text}
+        </p>
+      </li>
+    ))}
+  </ul>
+</SectionShell>

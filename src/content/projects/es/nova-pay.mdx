@@ -1,0 +1,118 @@
+---
+title: "NovaPay Treasury"
+headline: "Reduciendo en 64% la Fricción de Pagos Masivos Multidivisa para Equipos CFO"
+order: 2
+category: "Fintech · B2B SaaS"
+tags:
+  - "Arquitectura de Producto"
+  - "UX de Tesorería B2B"
+  - "Design System & Tokens"
+  - "Astro & TypeScript"
+  - "Pruebas de Usabilidad"
+
+meta:
+  client: "NovaPay Financial (Caso Referencial)"
+  timeline: "Ene – Jun 2025"
+  role: "Lead Product Designer & UI Architect"
+
+overview: "NovaPay es una plataforma B2B de tesorería transfronteriza y liquidación instantánea diseñada para equipos financieros que operan en corredores USD, EUR, MXN y PEN."
+overviewParagraphs:
+  - "NovaPay es una plataforma B2B de tesorería transfronteriza y liquidación instantánea creada para equipos financieros que operan entre corredores USD, EUR, MXN y PEN."
+  - "El problema central era el riesgo operativo: los CFOs y controllers gestionaban más de 100 dispersiónes internacionales mediante cargas frágiles de CSV y modales secuenciales que ocultaban el tipo de cambio real hasta el último paso."
+  - "Como Lead Product Designer & UI Architect, rediseñé el motor de pagos por lotes, introduje el flujo de bloqueo FX en tiempo real y entregué la arquitectura de componentes en código."
+
+toolsAndMethods:
+  - "Figma + Token Studio: sistema UI financiero de alta densidad y paridad de tokens"
+  - "Pruebas con prototipos interactivos junto a 9 controllers corporativos y CFOs"
+  - "Arquitectura Frontend: TypeScript, Tailwind CSS y tablas de datos accesibles"
+  - "Especificación de máquina de estados para compliance KYB y firmas 2FA"
+
+team:
+  - "1 Lead Product Designer & UI Architect"
+  - "1 Product Manager (Pagos & Compliance)"
+  - "4 Ingenieros Full-Stack & Ledger"
+
+inThisCase:
+  showNav: true
+  problem: "Los equipos de finanzas corporativas que ejecutaban nóminas internacionales y pagos a proveedores enfrentaban un wizard de 7 pasos donde la cotización FX expiraba a mitad de revisión. Un solo error de IBAN o RUC obligaba a cancelar todo el lote y volver a subir el archivo desde cero."
+  problemHighlight: "Los controllers invertían más de 45 minutos conciliando filas fallidas en hojas de cálculo externas porque la plataforma trataba un lote de 120 pagos como una transacción modal de todo o nada."
+  problemClosing: "Para capturar cuentas corporativas mid-market, NovaPay necesitaba un espacio de trabajo con velocidad de hoja de cálculo capaz de validar compliance en línea, fijar tasas FX con transparencia y soportar doble firma por roles."
+
+  approachTitle: "Mi Enfoque: Dos Puntos de Vista, Un Flujo Contable"
+  approach: "Arquitectamos el flujo de dispersión alrededor de los dos roles que intervienen en cada desembolso corporativo: el Operador de Tesorería que prepara el lote y el CFO/Aprobador que autoriza la liquidez y exposición cambiaria."
+  povs:
+    - title: "POV 1: Operador de Tesorería"
+      subtitle: "Resolución de errores en línea sin salir del lote"
+      listTitle: "Decisiones clave de diseño:"
+      items:
+        - "Grilla con inspector lateral que señala errores de IBAN/SWIFT/RUC sin bloquear las filas válidas"
+        - "Ejecución parcial: dispersar pagos válidos al instante y dejar en cola solo los observados"
+        - "Navegación por teclado (atajos ⌘K y edición directa de celdas) para alto volumen"
+        - "Validación automática de bancos corresponsales con desglose inmediato de comisiones"
+    - title: "POV 2: CFO & Aprobador"
+      subtitle: "Visibilidad inmediata de impacto en liquidez y spread FX"
+      listTitle: "Decisiones clave de diseño:"
+      items:
+        - "Barra en vivo de bloqueo FX por 90 segundos comparando tasa garantizada vs. mercado"
+        - "Resumen pre-vuelo de saldos en billetera antes y después de la liquidación"
+        - "Drawer de aprobación multifirma con Passkey / 2FA en un solo paso"
+
+  challengeTitle: "Reto Principal: Validación de la Arquitectura de Revisión por Lotes y Bloqueo FX"
+  challengeHighlight: "Probamos dos arquitecturas de revisión con 9 controllers financieros: el inspector lateral persistente redujo en 64% el tiempo de corrección de errores frente al wizard secuencial."
+  coreChallenge: "Cuando un lote de 150 pagos internacionales incluye 4 alertas de compliance y 3 divisas distintas, ¿cómo permitir que el operador corrija errores y bloquee tasas FX sin perder de vista el impacto total en la liquidez?"
+  options:
+    - title: "Opción A: Inspector Lateral Persistente + Barra FX en Vivo"
+      recommended: true
+      items:
+        - "Barra superior fija con liquidez por divisa y temporizador de bloqueo FX"
+        - "Al hacer clic en una fila con error se abre un panel lateral sin ocultar la tabla"
+        - "Recálculo instantáneo de totales por corredor al editar o excluir filas"
+    - title: "Opción B: Wizard Multietapa + Editor Modal por Fila"
+      items:
+        - "Flujo secuencial de 5 pasos (Carga → Validación → Cotización FX → Firma → Recibo)"
+        - "Cada error abre un modal superpuesto que bloquea la vista del lote"
+        - "Obliga a retroceder pasos si el monto supera el saldo disponible en una divisa"
+  optionsCaption: "Por qué comparamos estas dos opciones: el software financiero tradicional suele abusar de wizards paso a paso (Opción B), mientras que los operadores de tesorería requieren contexto simultáneo entre filas y saldos (Opción A)."
+  findings:
+    title: "Hallazgos del test: Por qué ganó el inspector persistente"
+    items:
+      - "64% menos tiempo corrigiendo errores: 1m 40s frente a 4m 35s en el wizard tradicional."
+      - "Cero cotizaciones vencidas: mantener visible el bloqueo FX eliminó recotizaciones sorpresa."
+      - "Mayor confianza de auditoría: los CFOs aprobaron lotes 2.1x más rápido viendo el delta de saldos en una sola vista."
+    note: "Validado en 9 sesiones moderadas con controllers B2B y líderes de finanzas."
+  retrospective:
+    title: "Qué haría diferente hoy"
+    text: "Involucrar al equipo legal y de prevención de lavado (AML/KYB) desde los primeros wireframes para co-diseñar los estados de documentación observada junto con la grilla interactiva."
+
+  designSystem: "Las interfaces financieras exigen precisión tabular, semántica de estados inequívoca y cero saltos de layout durante cotizaciones en vivo. Construí un sistema de tokens compartido 1:1 entre Figma y TypeScript."
+  systemTokens:
+    title: "Componentes y tokens definidos"
+    items:
+      - "Escala tipográfica con números tabulares (`tabular-nums`) para alineación decimal exacta"
+      - "Tokens semánticos para estados de liquidación (En cola, FX Fijado, Revisión KYB, Liquidado T+0)"
+      - "Primitivas de tablas de alta densidad con cabeceras fijas, selección masiva y foco accesible"
+      - "Componentes de línea de tiempo de auditoría y drawer de aprobación multifirma"
+  systemBody: "Cada token de Figma se mapeó directamente a variables CSS en Tailwind v4, permitiendo a ingeniería construir nuevas vistas de tesorería sin hojas de estilo ad-hoc."
+  systemImpact:
+    title: "Impacto"
+    text: "Paridad visual 1:1 entre diseño y código en producción, reduciendo en 40% las rondas de revisión de PRs en frontend."
+
+  outcome: "El nuevo motor de pagos masivos salió a producción operando dispersiones multidivisa en 4 corredores de LATAM y Europa."
+  deliverables:
+    - "32+ pantallas de alta fidelidad cubriendo onboarding KYB, fondeo de billeteras y pagos por lotes"
+    - "Design System financiero de alta densidad con tokens 1:1 entre Figma y Tailwind CSS"
+    - "Prototipos interactivos de validación y reporte comparativo de usabilidad"
+    - "Componentes frontend en producción para el inspector de lotes y barra de bloqueo FX"
+  deliveredLabel: "32+ pantallas · Motor de Tesorería B2B · Entrega 1:1 en código"
+
+testimonial:
+  quote: "Abordó nuestra plataforma de tesorería con mentalidad de dueño de producto: eliminó pasos innecesarios, validó el flujo de alta densidad con CFOs reales y entregó código UI listo para producción que nuestro equipo integró de inmediato."
+  author: "Alejandro Vargas"
+  title: "VP of Product en NovaPay Financial"
+  date: "Junio 2025"
+
+nextProject:
+  slug: "petinder-online"
+  title: "Petinder.online — Maximizando la Eficiencia de Búsqueda Mediante Validación de Filtros"
+  category: "Marketplace de doble cara"
+---

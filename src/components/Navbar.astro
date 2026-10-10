@@ -1,0 +1,190 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import { defaultLang } from '../i18n/ui';
+import LanguagePicker from './LanguagePicker.astro';
+import { site } from '../config/site';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+// En la Home usamos fragmentos puros (#id) para el scroll suave y el scrollspy;
+// desde otras rutas, los enlaces apuntan a la Home localizada + ancla.
+const homePath = lang === defaultLang ? '/' : `/${lang}/`;
+const normalizedPath = Astro.url.pathname.replace(/\/+$/, '/') || '/';
+const isHome = normalizedPath === homePath || `${normalizedPath}/` === homePath;
+const anchor = (id: string) => (isHome ? `#${id}` : `${homePath}#${id}`);
+
+const links = [
+  { id: 'proyectos', label: t('nav.projects') },
+  { id: 'servicios', label: t('nav.services') },
+  { id: 'proceso', label: t('nav.process') },
+  { id: 'contacto', label: t('nav.contact') },
+];
+---
+
+<header
+  data-topbar
+  aria-label="Site header"
+  class="fixed top-3 md:top-4 inset-x-0 z-50 pointer-events-none"
+>
+  <div class="max-w-[1440px] mx-auto px-3 sm:px-8 lg:px-12 grid grid-cols-1 md:grid-cols-[minmax(110px,13%)_minmax(0,1fr)_minmax(110px,13%)] items-start gap-4 md:gap-8">
+
+    <!-- 1. IZQUIERDA: Nombre / Logo apilado (Fixed en desktop, oculto en mobile, cambia de color al hacer scroll) -->
+    <a
+      href={isHome ? '#top' : homePath}
+      data-brand-mark
+      aria-label={t('nav.backToTop')}
+      class="brand-mark hidden md:block w-max translate-y-4 text-left text-[clamp(18px,2.2vw,32px)] font-bold leading-[0.82] tracking-tight pointer-events-auto select-none"
+    >
+      {site.brandLines.map((line, idx) => (
+        <>
+          {idx > 0 && <br />}
+          {line}
+        </>
+      ))}
+    </a>
+
+    <!-- 2. CENTRO: Enlaces + Cambio de idioma juntos (Fixed tanto en desktop como en mobile) -->
+    <div class="pointer-events-auto mx-auto flex w-full md:w-max max-w-full items-center justify-center gap-3 sm:gap-5 md:gap-7 rounded-full bg-white/80 px-4 sm:px-6 py-[13px] md:py-[15px] backdrop-blur-[18px] shadow-[0_1px_2px_rgb(9_9_11/0.04)]">
+      <nav
+        aria-label={t('nav.sections')}
+        data-scrollspy
+        class="flex items-center justify-center gap-3.5 sm:gap-5 md:gap-7 text-[13px] font-bold leading-none"
+      >
+        {links.map(({ id, label }, idx) => {
+          const isProjectRoute = !isHome && id === 'proyectos' && normalizedPath.includes('/projects');
+          const isCurrent = (idx === 0 && isHome) || isProjectRoute;
+          return (
+            <a
+              href={anchor(id)}
+              data-nav-target={id}
+              class:list={[
+                'text-ink-secondary hover:text-ink-primary transition-colors whitespace-nowrap',
+                isCurrent ? 'is-current' : '',
+              ]}
+              aria-current={isCurrent ? 'true' : undefined}
+            >
+              {label}
+            </a>
+          );
+        })}
+      </nav>
+
+      <span class="h-3.5 w-px bg-border-subtle shrink-0" aria-hidden="true"></span>
+
+      <LanguagePicker />
+    </div>
+
+    <!-- 3. DERECHA: Botón 'Contactar' (Fixed en desktop, oculto en mobile) -->
+    <a
+      href={anchor('contacto')}
+      class="cta-pill hidden md:inline-flex relative isolate justify-self-end items-center justify-center rounded-full bg-ink-primary/92 px-5 py-[15px] text-[13px] font-bold leading-none text-white backdrop-blur-xl pointer-events-auto whitespace-nowrap"
+    >
+      {t('nav.cta')}
+    </a>
+
+  </div>
+</header>
+
+<script>
+  const brand = document.querySelector<HTMLElement>('[data-brand-mark]');
+  const nav = document.querySelector<HTMLElement>('[data-scrollspy]');
+  const navLinks = nav ? [...nav.querySelectorAll<HTMLAnchorElement>('a[data-nav-target]')] : [];
+  const sections = navLinks
+    .map((link) => document.getElementById(link.dataset.navTarget ?? ''))
+    .filter((el): el is HTMLElement => Boolean(el));
+
+  const darkTextSelector = 'a, button, p, h1, h2, h3, dt, dd, li, span, strong';
+
+  const pointInsideRect = (rect: DOMRect, x: number, y: number) =>
+    x >= rect.left - 1 && x <= rect.right + 1 && y >= rect.top - 1 && y <= rect.bottom + 1;
+
+  const isOverTextPaint = (element: Element, x: number, y: number) => {
+    const range = document.createRange();
+    for (const node of element.childNodes) {
+      if (node.nodeType !== Node.TEXT_NODE || !node.nodeValue?.trim()) continue;
+      range.selectNodeContents(node);
+      for (const rect of range.getClientRects()) {
+        if (pointInsideRect(rect, x, y)) return true;
+      }
+    }
+    return false;
+  };
+
+  const isOverAnyTextOrSurface = (element: Element, x: number, y: number) => {
+    let current: Element | null = element;
+    let depth = 0;
+    while (current && depth < 5 && current !== document.body && current !== document.documentElement) {
+      depth += 1;
+      const style = getComputedStyle(current);
+      if (style.visibility === 'hidden' || Number(style.opacity) < 0.05) {
+        current = current.parentElement;
+        continue;
+      }
+      if (current.tagName === 'IMG' || current.tagName === 'SVG') return true;
+      if (current.matches?.(darkTextSelector) && isOverTextPaint(current, x, y)) return true;
+      current = current.parentElement;
+    }
+    return false;
+  };
+
+  const isBrandOverContent = () => {
+    if (!brand || brand.offsetParent === null) return false;
+    const rect = brand.getBoundingClientRect();
+    const cols = 3;
+    const rows = 4;
+    for (let r = 0; r < rows; r += 1) {
+      const y = rect.top + rect.height * ((r + 0.5) / rows);
+      for (let c = 0; c < cols; c += 1) {
+        const x = rect.left + rect.width * ((c + 0.5) / cols);
+        const below = document
+          .elementsFromPoint(x, y)
+          .find((el) => !el.closest('[data-topbar]') && el !== document.body && el !== document.documentElement);
+        if (below && isOverAnyTextOrSurface(below, x, y)) return true;
+      }
+    }
+    return false;
+  };
+
+  /* Actualiza color del logo/nombre al hacer scroll o al superponerse con contenido (estilo Mitacore) */
+  const updateBrandTone = () => {
+    if (!brand) return;
+    const shouldGradient = window.scrollY > 18 || isBrandOverContent();
+    brand.classList.toggle('is-gradient', shouldGradient);
+  };
+
+  /* Actualiza el enlace activo en el navbar durante el scroll */
+  const updateActiveNav = () => {
+    if (!sections.length) return;
+    const pivot = window.innerHeight * 0.35;
+    const isAtBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+    const current = isAtBottom
+      ? sections[sections.length - 1]
+      : sections.reduce((active, section) => {
+          return section.getBoundingClientRect().top <= pivot ? section : active;
+        }, sections[0]);
+
+    navLinks.forEach((link) => {
+      const isActive = link.dataset.navTarget === current.id;
+      link.classList.toggle('is-current', isActive);
+      if (isActive) link.setAttribute('aria-current', 'true');
+      else link.removeAttribute('aria-current');
+    });
+  };
+
+  let ticking = false;
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      updateBrandTone();
+      updateActiveNav();
+      ticking = false;
+    });
+  };
+
+  updateBrandTone();
+  updateActiveNav();
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+</script>

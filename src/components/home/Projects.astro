@@ -1,0 +1,46 @@
+---
+import { getCollection } from 'astro:content';
+import SectionShell from './SectionShell.astro';
+import ProjectRow from '../ProjectRow.astro';
+import { useTranslations } from '../../i18n/utils';
+import { defaultLang, type SupportedLanguage } from '../../i18n/ui';
+
+interface Props {
+  lang: SupportedLanguage;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+// Casos del idioma actual, ordenados por `order` (src/content/projects/{lang}/*)
+const projects = (await getCollection('projects', ({ id }) => id.startsWith(`${lang}/`)))
+  .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+
+const basePath = lang === defaultLang ? '/projects' : `/${lang}/projects`;
+const toSlug = (id: string) => id.replace(`${lang}/`, '').replace(/\.mdx?$/, '');
+---
+
+<SectionShell id="proyectos" kicker={t('projects.kicker')} title={t('projects.title')}>
+  <span slot="title-aside" class="shrink-0 pb-2 font-mono text-xs text-ink-muted">
+    [{projects.length.toString().padStart(2, '0')}]
+  </span>
+
+  {projects.length > 0 ? (
+    <div class="border-t border-border-subtle">
+      {projects.map((proj, idx) => (
+        <ProjectRow
+          index={idx + 1}
+          title={proj.data.title}
+          headline={proj.data.headline}
+          category={proj.data.category}
+          timeline={proj.data.meta?.timeline}
+          tags={proj.data.tags}
+          href={`${basePath}/${toSlug(proj.id)}`}
+          newTabLabel={t('projects.newTab')}
+        />
+      ))}
+    </div>
+  ) : (
+    <p class="border-t border-border-subtle pt-6 text-ink-secondary">{t('projects.empty')}</p>
+  )}
+</SectionShell>

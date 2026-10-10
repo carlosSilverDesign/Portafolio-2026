@@ -1,52 +1,119 @@
 ---
 title: "Petinder.online"
-headline: "Maximizando la Eficiencia de Búsqueda a Través de la Validación de Filtros"
+headline: "Maximizando la Eficiencia de Búsqueda Mediante Validación de Filtros"
 order: 1
-category: "Two-sided marketplace"
+category: "Marketplace de doble cara"
 tags:
-  - "End-to-end product design"
-  - "Usability testing"
-  - "Scalable design system"
+  - "Diseño de producto end-to-end"
+  - "Pruebas de usabilidad"
+  - "Design System escalable"
   - "Figma"
   - "A/B testing"
 
 meta:
   client: "Petinder.online"
   timeline: "May – Nov 2024"
-  role: "Lead Product Designer"
+  role: "Product Designer"
 
-overview: "Petinder is a web platform connecting pet adopters with animal shelters and rescue organizations. The core challenge was structural: designing an intuitive search experience for emotionally-driven browsing while providing shelters with a scalable listing management system."
+overview: "Petinder es una plataforma web que conecta adoptantes con refugios y organizaciones de rescate animal. El reto central fue estructural: diseñar una búsqueda intuitiva para una exploración emocional y, a la vez, dotar a los refugios de un sistema escalable de gestión."
+overviewParagraphs:
+  - "Petinder es una plataforma web que conecta a adoptantes de mascotas con refugios y organizaciones de rescate."
+  - "El problema central de diseño no era cosmético, sino estructural: ¿cómo diseñar una experiencia de búsqueda donde un usuario decidido encuentre exactamente lo que busca, mientras otro solo explora opciones, sin sobrecargar la interfaz para ninguno?"
+  - "Como Product Designer en un equipo de tres diseñadores, lideré la arquitectura UX/UI y definí la jerarquía de filtros validada mediante pruebas de usabilidad no moderadas durante 6 meses de iteración."
 
 toolsAndMethods:
-  - "Figma: UI design, prototyping, scalable design system"
-  - "Maze: unmoderated usability testing, A/B study (n=7)"
-  - "Iterative design process across 6-month timeline"
-  - "Developer handoff documentation + interaction specs"
+  - "Figma: diseño UI, prototipado, Design System escalable y librería de componentes"
+  - "Maze: pruebas de usabilidad no moderadas, estudio A/B (n=7)"
+  - "Proceso de diseño iterativo a lo largo de 6 meses"
+  - "Documentación de handoff para desarrollo + especificaciones de interacción"
 
 team:
   - "1 Product Manager"
-  - "3 UI/UX Designers"
+  - "3 Diseñadores UI/UX"
   - "1 Stakeholder (Founder)"
 
 inThisCase:
   showNav: true
-  problem: "The pet adoption space has a discoverability problem: platforms either overwhelm users with excessive filters or offer so little that results feel irrelevant. Balancing emotional browsing with transactional filtering was the core tension."
-  approach: "Structured the product around two distinct POVs: the adopter (focused on emotional resonance and speed) and the shelter admin (focused on operational efficiency and listing consistency)."
-  coreChallenge: "Validated persistent sidebar vs. modal overlay through usability testing in Maze. The persistent sidebar preserved contextual orientation and reduced task friction across all tested users."
-  designSystem: "Created standardized design tokens in Figma (typography scales, accessible color contrast, UI components) to streamline developer handoff and reduce design debt."
-  outcome: "Delivered a fully documented 20-screen dual-sided MVP ready for production with validated user flows."
+  problem: "El ecosistema de adopción de mascotas sufre un problema de descubribilidad: las plataformas saturan al usuario con listados sin estructura o esconden criterios críticos. Durante el discovery identificamos dos actores con necesidades opuestas: personas explorando emocionalmente y refugios administrando inventario."
+  problemHighlight: "Aunque los usuarios contaban con múltiples opciones de búsqueda en Petinder, sin validar distintas arquitecturas de filtrado, encontrar la mascota adecuada seguía siendo una fricción abierta."
+  problemClosing: "Para superar a los clasificados genéricos y grupos en redes sociales, la plataforma requería una arquitectura de doble cara: ayudar a los adoptantes a filtrar compatibilidad real rápidamente y dar a los refugios un flujo estandarizado de publicación."
+
+  approachTitle: "Mi Enfoque: Dos Puntos de Vista, Un Sistema"
+  approach: "Cada decisión de arquitectura se evaluó frente a ambos grupos de usuarios en simultáneo. Las funcionalidades diseñadas para un lado alimentaban directamente la experiencia del otro."
+  povs:
+    - title: "POV 1: Adoptante"
+      subtitle: "Filtrado que respeta la exploración emocional"
+      listTitle: "Decisiones clave de diseño:"
+      items:
+        - "Sistema de filtros multinivel (especie, edad, compatibilidad, salud, comportamiento) con jerarquía clara"
+        - "Píldoras de resumen persistentes para visibilizar los filtros activos"
+        - "Tarjetas estructuradas que muestran señales de confianza de un vistazo"
+        - "Flujo de guardados y comparación para decisiones informadas"
+    - title: "POV 2: Refugio"
+      subtitle: "Carga estructurada sin fricción operativa"
+      listTitle: "Decisiones clave de diseño:"
+      items:
+        - "Creación guiada de perfiles con atributos médicos y conductuales predefinidos"
+        - "Esquema de datos consistente que alimenta directamente los filtros del adoptante"
+        - "Panel centralizado para gestionar solicitudes y estado de cada mascota"
+
+  challengeTitle: "Reto Principal: Validación de Usabilidad del Sistema de Filtros"
+  challengeHighlight: "Validamos la ubicación de los filtros con pruebas en Maze: el sidebar persistente superó al modal superpuesto al preservar el contexto del usuario y reducir la fricción de navegación."
+  coreChallenge: "El sistema de filtros era la interacción de mayor impacto en el producto. En lugar de asumir una solución, construí dos prototipos interactivos en Figma para medir cómo la disposición espacial afectaba la velocidad y orientación del usuario."
+  options:
+    - title: "Opción A: Sidebar de filtros (persistente)"
+      recommended: true
+      items:
+        - "Siempre visible junto a la grilla de resultados"
+        - "Actualización en tiempo real sin perder el contexto visual"
+        - "Visibilidad permanente de los criterios aplicados"
+    - title: "Opción B: Modal de filtros (overlay)"
+      items:
+        - "Activación bajo demanda maximizando el ancho de grilla"
+        - "Requiere abrir y cerrar el modal en cada ajuste"
+        - "Oculta temporalmente los resultados durante el filtrado"
+  optionsCaption: "Por qué comparamos estas dos opciones: representan el trade-off arquitectónico entre contexto espacial persistente (Opción A) y máxima área libre de pantalla (Opción B)."
+  findings:
+    title: "Hallazgos del test: Por qué ganó el sidebar"
+    items:
+      - "Descubribilidad: Los filtros permanecieron visibles en todo momento, eliminando clics de búsqueda."
+      - "Preservación de contexto: Los usuarios vieron cambiar los resultados al instante tras cada ajuste."
+      - "Menor carga cognitiva: Menos pasos para refinar búsquedas con múltiples atributos."
+    note: "Validado mediante estudio no moderado en Maze + entrevistas de seguimiento (n = 7 participantes)."
+  retrospective:
+    title: "Qué haría diferente hoy"
+    text: "Adelantar la validación del Drawer de filtros en mobile en paralelo al estudio de desktop desde el primer sprint, asegurando paridad entre el sidebar persistente y el bottom-sheet móvil."
+
+  designSystem: "Para alinear a tres diseñadores durante seis meses y acelerar el handoff con ingeniería, construí un Design System compartido en Figma antes de escalar las pantallas de alta fidelidad."
+  systemTokens:
+    title: "Componentes y tokens definidos"
+    items:
+      - "Escala tipográfica y tokens semánticos de jerarquía"
+      - "Variables de color accesibles (contraste WCAG AA validado)"
+      - "Componentes interactivos multi-estado (filtros, cards, badges, inputs)"
+      - "Retículas responsivas y primitivas de espaciado"
+  systemBody: "El sistema permitió ensamblar nuevos flujos sin deriva visual y entregó a desarrollo una referencia 1:1 de tokens lista para código."
+  systemImpact:
+    title: "Impacto"
+    text: "Eliminó inconsistencias visuales en más de 20 pantallas y redujo a la mitad el tiempo de especificación para desarrollo."
+
+  outcome: "Se entregó un MVP de doble cara completo, validado con usuarios y listo para implementación en producción."
+  deliverables:
+    - "20+ pantallas de alta fidelidad end-to-end para desktop y mobile"
+    - "Prototipos interactivos para los flujos de adoptante y refugio"
+    - "Librería de componentes escalable y arquitectura de tokens en Figma"
+    - "Reporte de pruebas de usabilidad y arquitectura de filtros validada"
+    - "Documentación integral de handoff para ingeniería"
+  deliveredLabel: "20+ pantallas · MVP doble cara · Validado en Maze"
 
 testimonial:
-  quote: "Her contribution to Petinder's new website was crucial. She led the end-to-end UX/UI and ensured the cross-functional team stayed completely aligned."
+  quote: "Su contribución a la nueva plataforma de Petinder fue crucial. Lideró la arquitectura UX/UI de extremo a extremo, validó decisiones con usuarios reales y mantuvo al equipo completamente alineado."
   author: "Meelis Paloson"
-  title: "Founder at Petinder.online"
-  date: "November 2024"
+  title: "Founder en Petinder.online"
+  date: "Noviembre 2024"
 
 nextProject:
-  slug: "menuresto"
-  title: "MenuResto SaaS Platform"
+  slug: "nova-pay"
+  title: "NovaPay — Tesorería B2B Transfronteriza & Liquidación Instantánea"
+  category: "Fintech · B2B SaaS"
 ---
-
-## Contenido adicional del caso de estudio
-
-Aquí puedes agregar texto enriquecido, embeds, capturas de pantalla o diagramas que complementen cada sección del caso de estudio.

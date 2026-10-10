@@ -1,12 +1,13 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import Navbar from '../components/Navbar.astro';
 import ProjectMeta from '../components/ProjectMeta.astro';
 import ProjectContext from '../components/ProjectContext.astro';
 import InThisCaseNav from '../components/InThisCaseNav.astro';
 import Testimonial from '../components/Testimonial.astro';
 import ProjectFooter from '../components/ProjectFooter.astro';
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
-import { ArrowLeft } from '@lucide/astro';
+import { ArrowLeft, ArrowUpRight, Check } from '@lucide/astro';
 import type { CollectionEntry } from 'astro:content';
 
 interface Props {
@@ -19,135 +20,511 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
 const homeUrl = lang === 'es' ? '/' : `/${lang}`;
+const nextHref = data.nextProject
+  ? lang === 'es'
+    ? `/projects/${data.nextProject.slug}`
+    : `/${lang}/projects/${data.nextProject.slug}`
+  : undefined;
 ---
 
-<BaseLayout title={`${data.title} — ${data.headline}`} description={data.overview}>
-  <article class="w-full">
-    <!-- Breadcrumb & Botón Volver -->
-    <nav class="flex items-center gap-2 mb-10 font-mono text-xs text-[var(--color-ink-muted)]">
-      <a href={homeUrl} class="inline-flex items-center gap-1.5 hover:text-black transition-colors">
-        <ArrowLeft class="w-3.5 h-3.5" />
-        <span>Home</span>
+<BaseLayout title={`${data.title} — ${data.headline}`} description={data.overview} width="wide">
+  <Navbar />
+
+  <article class="max-w-5xl mx-auto w-full">
+    <!-- Breadcrumb -->
+    <nav aria-label="Breadcrumb" class="flex items-center gap-2 mb-6 font-mono text-xs text-ink-muted">
+      <a href={`${homeUrl}#proyectos`} class="inline-flex items-center gap-1.5 hover:text-accent-blue transition-colors">
+        <ArrowLeft class="size-3.5" aria-hidden="true" />
+        <span>{t('case.breadcrumb.home')}</span>
       </a>
-      <span>/</span>
-      <span class="text-[var(--color-ink-primary)] truncate">{data.title}</span>
+      <span aria-hidden="true">/</span>
+      <span class="text-ink-primary font-medium truncate">{data.title.toLowerCase()}</span>
     </nav>
 
-    <!-- Header del Proyecto (Hikatapixel Style) -->
-    <header class="space-y-4 mb-10">
-      {data.category && (
-        <span class="inline-block px-3 py-1 rounded-full text-xs font-mono border border-[var(--color-border-subtle)] bg-[var(--color-surface)] text-[var(--color-ink-secondary)]">
-          {data.category}
-        </span>
+    <!-- TARJETA HERO DEL CASO (Estilo Editorial Hikatapixel + Nueva UI Azul Digital) -->
+    <header class="rounded-[24px] border border-border-subtle bg-surface p-6 sm:p-10 shadow-[0_1px_2px_rgb(9_9_11/0.03)]">
+      <div class="space-y-4">
+        {data.category && (
+          <span class="inline-block px-3.5 py-1 rounded-full text-xs font-mono font-medium border border-accent-blue-border bg-accent-blue-subtle text-accent-blue">
+            {data.category}
+          </span>
+        )}
+
+        <h1 class="text-3xl sm:text-5xl font-bold tracking-[-0.035em] text-ink-primary leading-[1.06]">
+          {data.headline}
+        </h1>
+
+        {data.tags && data.tags.length > 0 && (
+          <p class="font-mono text-xs text-ink-secondary pt-1 leading-relaxed">
+            {data.tags.join('  •  ')}
+          </p>
+        )}
+      </div>
+
+      <!-- Data Strip: Project / Timeline / Role -->
+      {data.meta && (
+        <ProjectMeta
+          client={data.meta.client}
+          timeline={data.meta.timeline}
+          role={data.meta.role}
+        />
       )}
 
-      <h1 class="text-3xl sm:text-5xl font-medium tracking-tight text-[var(--color-ink-primary)] leading-[1.15]">
-        {data.headline}
-      </h1>
-
-      {data.tags && data.tags.length > 0 && (
-        <p class="font-mono text-xs text-[var(--color-ink-muted)] pt-2 leading-relaxed">
-          {data.tags.join('  ·  ')}
-        </p>
-      )}
+      <!-- Overview + Mockup + Tools & Methods + Team -->
+      <ProjectContext
+        title={data.title}
+        category={data.category}
+        heroImage={data.heroImage}
+        overview={data.overview}
+        overviewParagraphs={data.overviewParagraphs}
+        toolsAndMethods={data.toolsAndMethods}
+        team={data.team}
+      />
     </header>
 
-    <!-- Data Strip: Project / Timeline / Role -->
-    {data.meta && (
-      <ProjectMeta
-        client={data.meta.client}
-        timeline={data.meta.timeline}
-        role={data.meta.role}
+    <!-- CUERPO EN 2 COLUMNAS: Sidebar 'In this case' + Tarjetas de Sección -->
+    <div class="mt-6 grid grid-cols-1 lg:grid-cols-[210px_minmax(0,1fr)] gap-6 items-start">
+      <!-- Columna izquierda: Índice sticky -->
+      <InThisCaseNav
+        inThisCase={data.inThisCase}
+        hasTestimonial={Boolean(data.testimonial)}
       />
-    )}
 
-    <!-- Overview + Tools & Methods + Team -->
-    <ProjectContext
-      overview={data.overview}
-      toolsAndMethods={data.toolsAndMethods}
-      team={data.team}
-    />
+      <!-- Columna derecha: Secciones modulares en tarjetas blancas -->
+      <div class="space-y-6 min-w-0">
 
-    <!-- Navegación anclada ('In this case') -->
-    <InThisCaseNav
-      inThisCase={data.inThisCase}
-      hasTestimonial={Boolean(data.testimonial)}
-    />
+        <!-- 1. THE PROBLEM -->
+        {data.inThisCase?.problem && (
+          <section
+            id="the-problem"
+            class="scroll-mt-24 rounded-[24px] border border-border-subtle bg-surface p-6 sm:p-10 space-y-5"
+          >
+            <h2 class="text-2xl sm:text-3xl font-bold tracking-[-0.03em] text-ink-primary">
+              {t('case.nav.problem')}
+            </h2>
 
-    <!-- Secciones del Caso ('In this case') con Renderizado Condicional -->
-    <div class="space-y-16 my-12">
-      {data.inThisCase?.problem && (
-        <section id="the-problem" class="scroll-mt-10 space-y-4 pt-6 border-t border-[var(--color-border-subtle)]">
-          <h2 class="text-2xl font-medium tracking-tight text-[var(--color-ink-primary)]">
-            {t('case.nav.problem')}
-          </h2>
-          <div class="text-base sm:text-lg leading-relaxed text-[var(--color-ink-secondary)] space-y-4">
-            <p>{data.inThisCase.problem}</p>
+            <p class="text-sm sm:text-base leading-relaxed text-ink-secondary">
+              {data.inThisCase.problem}
+            </p>
+
+            {data.inThisCase.problemHighlight && (
+              <div class="rounded-2xl border border-accent-blue-border bg-accent-blue-subtle/80 p-5 sm:p-6">
+                <p class="text-sm sm:text-base font-bold leading-snug text-ink-primary">
+                  {data.inThisCase.problemHighlight}
+                </p>
+              </div>
+            )}
+
+            {data.inThisCase.problemClosing && (
+              <p class="text-sm sm:text-base leading-relaxed text-ink-secondary">
+                {data.inThisCase.problemClosing}
+              </p>
+            )}
+          </section>
+        )}
+
+        <!-- 2. MY APPROACH -->
+        {data.inThisCase?.approach && (
+          <section
+            id="my-approach"
+            class="scroll-mt-24 rounded-[24px] border border-border-subtle bg-surface p-6 sm:p-10 space-y-6"
+          >
+            <h2 class="text-2xl sm:text-3xl font-bold tracking-[-0.03em] text-ink-primary">
+              {data.inThisCase.approachTitle ?? t('case.nav.approach')}
+            </h2>
+
+            <p class="text-sm sm:text-base leading-relaxed text-ink-secondary">
+              {data.inThisCase.approach}
+            </p>
+
+            {data.inThisCase.povs && data.inThisCase.povs.length > 0 && (
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {data.inThisCase.povs.map((pov, idx) => (
+                  <div
+                    class:list={[
+                      'rounded-2xl p-6 space-y-3 border',
+                      idx === 0
+                        ? 'bg-accent-blue-subtle/75 border-accent-blue-border'
+                        : 'bg-canvas border-border-subtle',
+                    ]}
+                  >
+                    <h3 class="text-lg font-bold tracking-tight text-ink-primary">
+                      {pov.title}
+                    </h3>
+                    {pov.subtitle && (
+                      <p class="text-xs sm:text-sm text-ink-secondary">
+                        {pov.subtitle}
+                      </p>
+                    )}
+                    {pov.listTitle && (
+                      <p class="text-xs font-mono uppercase tracking-wider font-semibold text-accent-blue pt-1">
+                        {pov.listTitle}
+                      </p>
+                    )}
+                    <ul class="space-y-1.5 text-xs sm:text-sm text-ink-primary">
+                      {pov.items.map((item) => (
+                        <li class="flex items-start gap-2">
+                          <span class="text-accent-blue font-bold select-none">•</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
+        <!-- 3. CORE CHALLENGE -->
+        {data.inThisCase?.coreChallenge && (
+          <section
+            id="core-challenge"
+            class="scroll-mt-24 rounded-[24px] border border-border-subtle bg-surface p-6 sm:p-10 space-y-6"
+          >
+            <h2 class="text-2xl sm:text-3xl font-bold tracking-[-0.03em] text-ink-primary">
+              {data.inThisCase.challengeTitle ?? t('case.nav.challenge')}
+            </h2>
+
+            {data.inThisCase.challengeHighlight && (
+              <div class="rounded-2xl border border-border-subtle bg-canvas p-5 sm:p-6">
+                <p class="text-sm sm:text-base font-bold leading-snug text-ink-primary">
+                  {data.inThisCase.challengeHighlight}
+                </p>
+              </div>
+            )}
+
+            <p class="text-sm sm:text-base leading-relaxed text-ink-secondary">
+              {data.inThisCase.coreChallenge}
+            </p>
+
+            {data.inThisCase.options && data.inThisCase.options.length > 0 && (
+              <div class="space-y-4">
+                <div class="rounded-2xl bg-[#18181B] p-5 sm:p-7 grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div class="rounded-xl bg-white/95 p-3.5 space-y-2.5">
+                    <div class="h-3 w-2/3 rounded bg-neutral-200 mx-auto"></div>
+                    <div class="grid grid-cols-12 gap-2.5 h-36">
+                      <div class="col-span-4 rounded-lg border-2 border-accent-blue bg-accent-blue-subtle p-2 flex flex-col justify-between">
+                        <span class="font-mono text-[9px] font-bold text-accent-blue">Option A ✓</span>
+                        <div class="space-y-1">
+                          <div class="h-1.5 w-full rounded bg-accent-blue/30"></div>
+                          <div class="h-1.5 w-4/5 rounded bg-accent-blue/30"></div>
+                        </div>
+                        <div class="h-3 w-full rounded bg-accent-blue"></div>
+                      </div>
+                      <div class="col-span-8 rounded-lg bg-neutral-100 p-2 grid grid-cols-2 gap-2">
+                        <div class="rounded bg-neutral-200/80"></div>
+                        <div class="rounded bg-neutral-200/80"></div>
+                        <div class="rounded bg-neutral-200/80"></div>
+                        <div class="rounded bg-neutral-200/80"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="rounded-xl bg-white/95 p-3.5 space-y-2.5">
+                    <div class="h-3 w-2/3 rounded bg-neutral-200 mx-auto"></div>
+                    <div class="relative rounded-lg bg-neutral-100 h-36 p-3 flex items-center justify-center">
+                      <div class="grid grid-cols-3 gap-2 w-full h-full opacity-35">
+                        <div class="rounded bg-neutral-300"></div>
+                        <div class="rounded bg-neutral-300"></div>
+                        <div class="rounded bg-neutral-300"></div>
+                      </div>
+                      <div class="absolute inset-x-6 inset-y-5 rounded-lg bg-[#27272A] text-white p-3 flex flex-col justify-between shadow-lg">
+                        <span class="font-mono text-[9px] text-neutral-300 text-center">Option B · Modal</span>
+                        <div class="h-4 w-3/4 mx-auto rounded bg-white"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {data.inThisCase.options.map((opt) => (
+                    <div
+                      class:list={[
+                        'rounded-2xl p-6 space-y-3 border',
+                        opt.recommended
+                          ? 'bg-accent-blue-subtle/75 border-accent-blue-border'
+                          : 'bg-canvas border-border-subtle',
+                      ]}
+                    >
+                      <h3 class="text-base sm:text-lg font-bold tracking-tight text-ink-primary">
+                        {opt.title}
+                      </h3>
+                      <ul class="space-y-1.5 text-xs sm:text-sm text-ink-secondary">
+                        {opt.items.map((item) => (
+                          <li class="flex items-start gap-2">
+                            <span class="text-accent-blue font-bold select-none">•</span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {data.inThisCase.optionsCaption && (
+              <p class="text-xs sm:text-sm font-semibold text-ink-primary">
+                {data.inThisCase.optionsCaption}
+              </p>
+            )}
+
+            {data.inThisCase.findings && (
+              <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-stretch">
+                <!-- Preview del test en contenedor oscuro -->
+                <div class="md:col-span-6 rounded-2xl bg-[#09090B] p-5 flex items-center justify-center min-h-[210px]">
+                  <div class="w-full max-w-[230px] rounded-xl bg-surface p-4 space-y-2.5 shadow-md">
+                    <div class="flex items-center justify-between border-b border-border-subtle pb-2">
+                      <span class="font-mono text-[9px] uppercase tracking-wider text-accent-blue font-bold">Usability Validation</span>
+                      <span class="font-mono text-[9px] text-emerald-600 font-bold">100% Task Success</span>
+                    </div>
+                    <div class="space-y-1.5">
+                      <div class="flex items-center justify-between text-[10px]">
+                        <span class="text-ink-secondary">Option A (Persistent)</span>
+                        <span class="font-mono font-bold text-accent-blue">86% pref</span>
+                      </div>
+                      <div class="h-2 w-full rounded-full bg-canvas overflow-hidden">
+                        <div class="h-full w-[86%] rounded-full bg-accent-blue"></div>
+                      </div>
+                    </div>
+                    <div class="space-y-1.5 pt-1">
+                      <div class="flex items-center justify-between text-[10px]">
+                        <span class="text-ink-secondary">Option B (Overlay)</span>
+                        <span class="font-mono text-ink-muted">14% pref</span>
+                      </div>
+                      <div class="h-2 w-full rounded-full bg-canvas overflow-hidden">
+                        <div class="h-full w-[14%] rounded-full bg-ink-muted"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Hallazgos con checks azules -->
+                <div class="md:col-span-6 rounded-2xl border border-accent-blue-border bg-accent-blue-subtle/75 p-6 space-y-3 flex flex-col justify-between">
+                  <div class="space-y-3">
+                    <h3 class="text-base sm:text-lg font-bold tracking-tight text-ink-primary">
+                      {data.inThisCase.findings.title}
+                    </h3>
+                    <ul class="space-y-2 text-xs sm:text-sm text-ink-primary">
+                      {data.inThisCase.findings.items.map((item) => (
+                        <li class="flex items-start gap-2">
+                          <span class="mt-0.5 grid size-4 shrink-0 place-items-center rounded bg-accent-blue text-white">
+                            <Check class="size-3" aria-hidden="true" />
+                          </span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  {data.inThisCase.findings.note && (
+                    <p class="text-xs font-semibold text-ink-secondary pt-2 border-t border-accent-blue-border/60">
+                      {data.inThisCase.findings.note}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {data.inThisCase.retrospective && (
+              <div class="pt-2 space-y-2">
+                <h3 class="text-sm sm:text-base font-bold text-ink-primary">
+                  {data.inThisCase.retrospective.title}
+                </h3>
+                <p class="text-xs sm:text-sm leading-relaxed text-ink-secondary">
+                  {data.inThisCase.retrospective.text}
+                </p>
+              </div>
+            )}
+          </section>
+        )}
+
+        <!-- 4. SCALABLE DESIGN SYSTEM -->
+        {data.inThisCase?.designSystem && (
+          <section
+            id="scalable-design-system"
+            class="scroll-mt-24 rounded-[24px] border border-border-subtle bg-surface p-6 sm:p-10 space-y-5"
+          >
+            <h2 class="text-2xl sm:text-3xl font-bold tracking-[-0.03em] text-ink-primary">
+              {t('case.nav.system')}
+            </h2>
+
+            <p class="text-sm sm:text-base leading-relaxed text-ink-secondary">
+              {data.inThisCase.designSystem}
+            </p>
+
+            {data.inThisCase.systemTokens && (
+              <div class="rounded-2xl border border-border-subtle bg-canvas p-6 space-y-3">
+                <h3 class="text-base font-bold text-ink-primary">
+                  {data.inThisCase.systemTokens.title}
+                </h3>
+                <ul class="space-y-2 text-xs sm:text-sm text-ink-secondary">
+                  {data.inThisCase.systemTokens.items.map((item) => (
+                    <li class="flex items-start gap-2">
+                      <span class="mt-0.5 grid size-4 shrink-0 place-items-center rounded bg-accent-blue text-white">
+                        <Check class="size-3" aria-hidden="true" />
+                      </span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {data.inThisCase.systemBody && (
+              <p class="text-sm sm:text-base leading-relaxed text-ink-secondary">
+                {data.inThisCase.systemBody}
+              </p>
+            )}
+
+            {data.inThisCase.systemImpact && (
+              <div class="rounded-2xl border border-accent-blue-border bg-accent-blue-subtle/80 p-6 space-y-1.5">
+                <h3 class="text-sm font-bold text-accent-blue uppercase font-mono tracking-wider">
+                  {data.inThisCase.systemImpact.title}
+                </h3>
+                <p class="text-sm sm:text-base font-medium text-ink-primary">
+                  {data.inThisCase.systemImpact.text}
+                </p>
+              </div>
+            )}
+          </section>
+        )}
+
+        <!-- 5. OUTCOME -->
+        {data.inThisCase?.outcome && (
+          <section
+            id="outcome"
+            class="scroll-mt-24 rounded-[24px] border border-border-subtle bg-surface p-6 sm:p-10 space-y-6"
+          >
+            <h2 class="text-2xl sm:text-3xl font-bold tracking-[-0.03em] text-ink-primary">
+              {t('case.nav.outcome')}
+            </h2>
+
+            <p class="text-sm sm:text-base leading-relaxed text-ink-secondary">
+              {data.inThisCase.outcome}
+            </p>
+
+            {data.inThisCase.deliverables && data.inThisCase.deliverables.length > 0 && (
+              <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-stretch">
+                <!-- Key deliverables -->
+                <div class="md:col-span-6 rounded-2xl border border-border-subtle bg-canvas p-6 space-y-3">
+                  <h3 class="text-base font-bold text-ink-primary">
+                    {t('case.deliverables')}
+                  </h3>
+                  <ul class="space-y-2.5 text-xs sm:text-sm text-ink-secondary">
+                    {data.inThisCase.deliverables.map((item) => (
+                      <li class="flex items-start gap-2">
+                        <span class="mt-0.5 grid size-4 shrink-0 place-items-center rounded bg-accent-blue text-white">
+                          <Check class="size-3" aria-hidden="true" />
+                        </span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <!-- Delivered screens preview -->
+                <div class="md:col-span-6 rounded-2xl border border-border-subtle bg-canvas p-6 flex flex-col justify-between gap-4">
+                  <h3 class="text-base font-bold text-ink-primary">
+                    {t('case.deliveredScreens')}
+                  </h3>
+                  <div class="rounded-xl border border-accent-blue-border bg-accent-blue-subtle/60 p-4 flex-1 flex flex-col justify-between min-h-[160px]">
+                    <div class="flex items-center justify-between">
+                      <span class="font-mono text-[10px] font-bold text-accent-blue uppercase tracking-wider">
+                        {data.title}
+                      </span>
+                      <span class="rounded-full bg-white px-2 py-0.5 font-mono text-[10px] text-ink-secondary border border-border-subtle">
+                        1:1 Production Ready
+                      </span>
+                    </div>
+                    <div class="my-3 grid grid-cols-3 gap-2">
+                      <div class="rounded-lg bg-white p-2.5 border border-border-subtle space-y-1">
+                        <div class="h-1.5 w-8 rounded bg-accent-blue"></div>
+                        <div class="h-6 rounded bg-canvas"></div>
+                      </div>
+                      <div class="rounded-lg bg-white p-2.5 border border-accent-blue-border space-y-1 shadow-2xs">
+                        <div class="h-1.5 w-10 rounded bg-accent-blue"></div>
+                        <div class="h-6 rounded bg-accent-blue-subtle"></div>
+                      </div>
+                      <div class="rounded-lg bg-white p-2.5 border border-border-subtle space-y-1">
+                        <div class="h-1.5 w-6 rounded bg-accent-blue"></div>
+                        <div class="h-6 rounded bg-canvas"></div>
+                      </div>
+                    </div>
+                    <p class="font-mono text-[11px] text-ink-secondary">
+                      {data.inThisCase.deliveredLabel ?? 'Figma Design System + Interactive Flows'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </section>
+        )}
+
+        <!-- Contenido libre adicional del MDX (si existe) -->
+        <div class="prose prose-neutral max-w-none text-ink-secondary empty:hidden">
+          <slot />
+        </div>
+
+        <!-- 6. VOICES FROM THE PROJECT + WHAT'S NEXT (2 columnas lado a lado como en la imagen) -->
+        {(data.testimonial || data.nextProject) && (
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            {data.testimonial && (
+              <div class:list={[data.nextProject ? 'lg:col-span-7' : 'lg:col-span-12']}>
+                <Testimonial
+                  quote={data.testimonial.quote}
+                  author={data.testimonial.author}
+                  title={data.testimonial.title}
+                  date={data.testimonial.date}
+                />
+              </div>
+            )}
+
+            {data.nextProject && nextHref && (
+              <div class:list={[data.testimonial ? 'lg:col-span-5' : 'lg:col-span-12']}>
+                <aside class="rounded-[24px] border border-border-subtle bg-surface p-6 sm:p-8 flex flex-col justify-between h-full gap-4">
+                  <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-ink-primary">
+                    {t('footer.nextProject')}
+                  </h2>
+
+                  <!-- Thumbnail preview del siguiente proyecto -->
+                  <a
+                    href={nextHref}
+                    class="group block rounded-2xl bg-[#18181B] p-5 text-white space-y-4 overflow-hidden transition-transform duration-300 hover:scale-[1.01]"
+                  >
+                    <div class="flex items-center justify-between">
+                      <span class="rounded-full bg-white/10 px-2.5 py-0.5 font-mono text-[10px] text-sky-300">
+                        {data.nextProject.category ?? 'Case Study'}
+                      </span>
+                      <ArrowUpRight class="size-4 text-neutral-400 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" aria-hidden="true" />
+                    </div>
+                    <p class="text-lg font-bold tracking-tight leading-snug">
+                      {data.nextProject.title}
+                    </p>
+                    <div class="grid grid-cols-3 gap-2 pt-1">
+                      <div class="h-12 rounded-lg bg-white/10 border border-white/10"></div>
+                      <div class="h-12 rounded-lg bg-accent-blue/40 border border-sky-400/30"></div>
+                      <div class="h-12 rounded-lg bg-white/10 border border-white/10"></div>
+                    </div>
+                  </a>
+
+                  <a
+                    href={nextHref}
+                    class="w-full inline-flex items-center justify-center gap-2 rounded-full border border-accent-blue-border bg-accent-blue-subtle px-4 py-2.5 font-mono text-xs font-semibold text-accent-blue hover:bg-accent-blue hover:text-white transition-colors"
+                  >
+                    <span>{t('case.nextCta')}</span>
+                    <ArrowUpRight class="size-3.5" aria-hidden="true" />
+                  </a>
+                </aside>
+              </div>
+            )}
           </div>
-        </section>
-      )}
+        )}
 
-      {data.inThisCase?.approach && (
-        <section id="my-approach" class="scroll-mt-10 space-y-4 pt-6 border-t border-[var(--color-border-subtle)]">
-          <h2 class="text-2xl font-medium tracking-tight text-[var(--color-ink-primary)]">
-            {t('case.nav.approach')}
-          </h2>
-          <div class="text-base sm:text-lg leading-relaxed text-[var(--color-ink-secondary)] space-y-4">
-            <p>{data.inThisCase.approach}</p>
-          </div>
-        </section>
-      )}
-
-      {data.inThisCase?.coreChallenge && (
-        <section id="core-challenge" class="scroll-mt-10 space-y-4 pt-6 border-t border-[var(--color-border-subtle)]">
-          <h2 class="text-2xl font-medium tracking-tight text-[var(--color-ink-primary)]">
-            {t('case.nav.challenge')}
-          </h2>
-          <div class="text-base sm:text-lg leading-relaxed text-[var(--color-ink-secondary)] space-y-4">
-            <p>{data.inThisCase.coreChallenge}</p>
-          </div>
-        </section>
-      )}
-
-      {data.inThisCase?.designSystem && (
-        <section id="scalable-design-system" class="scroll-mt-10 space-y-4 pt-6 border-t border-[var(--color-border-subtle)]">
-          <h2 class="text-2xl font-medium tracking-tight text-[var(--color-ink-primary)]">
-            {t('case.nav.system')}
-          </h2>
-          <div class="text-base sm:text-lg leading-relaxed text-[var(--color-ink-secondary)] space-y-4">
-            <p>{data.inThisCase.designSystem}</p>
-          </div>
-        </section>
-      )}
-
-      {data.inThisCase?.outcome && (
-        <section id="outcome" class="scroll-mt-10 space-y-4 pt-6 border-t border-[var(--color-border-subtle)]">
-          <h2 class="text-2xl font-medium tracking-tight text-[var(--color-ink-primary)]">
-            {t('case.nav.outcome')}
-          </h2>
-          <div class="text-base sm:text-lg leading-relaxed text-[var(--color-ink-secondary)] space-y-4">
-            <p>{data.inThisCase.outcome}</p>
-          </div>
-        </section>
-      )}
+      </div>
     </div>
-
-    <!-- Contenido enriquecido libre escrito en el cuerpo del archivo MDX -->
-    <div class="prose prose-neutral max-w-none my-12 text-[var(--color-ink-secondary)]">
-      <slot />
-    </div>
-
-    <!-- Testimonio / Voices from the project -->
-    {data.testimonial && (
-      <Testimonial
-        quote={data.testimonial.quote}
-        author={data.testimonial.author}
-        title={data.testimonial.title}
-        date={data.testimonial.date}
-      />
-    )}
 
     <!-- Footer transversal del proyecto -->
-    <ProjectFooter nextProject={data.nextProject} />
+    <ProjectFooter />
   </article>
 </BaseLayout>

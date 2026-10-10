@@ -1,0 +1,36 @@
+---
+import SectionShell from './SectionShell.astro';
+import { useTranslations } from '../../i18n/utils';
+import type { SupportedLanguage, UIKey } from '../../i18n/ui';
+
+interface Props {
+  lang: SupportedLanguage;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const steps = [1, 2, 3, 4, 5, 6].map((n) => ({
+  index: n.toString().padStart(2, '0'),
+  title: t(`process.${n}.title` as UIKey),
+  desc: t(`process.${n}.desc` as UIKey),
+}));
+---
+
+<SectionShell id="proceso" kicker={t('process.kicker')} title={t('process.title')}>
+  <ol class="border-t border-border-subtle">
+    {steps.map(({ index, title, desc }) => (
+      <li class="grid grid-cols-[3.25rem_minmax(0,1fr)] md:grid-cols-[4.5rem_minmax(200px,0.38fr)_minmax(0,1fr)] gap-x-5 md:gap-x-12 gap-y-3 py-7 md:py-9 border-b border-border-subtle">
+        <span aria-hidden="true" class="text-[clamp(1.75rem,3.6vw,3.25rem)] font-bold leading-[0.85] tracking-[-0.04em] text-accent-blue tabular-nums">
+          {index}
+        </span>
+        <h3 class="self-center text-xl md:text-[26px] font-bold leading-[1] tracking-[-0.02em] text-ink-primary">
+          {title}
+        </h3>
+        <p class="col-start-2 md:col-start-auto text-base md:text-lg leading-snug text-ink-secondary">
+          {desc}
+        </p>
+      </li>
+    ))}
+  </ol>
+</SectionShell>

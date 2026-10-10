@@ -13,12 +13,16 @@ tags:
 meta:
   client: "Petinder.online"
   timeline: "May – Nov 2024"
-  role: "Lead Product Designer"
+  role: "Product Designer"
 
 overview: "Petinder is a web platform connecting pet adopters with animal shelters and rescue organizations. The core challenge was structural: designing an intuitive search experience for emotionally-driven browsing while providing shelters with a scalable listing management system."
+overviewParagraphs:
+  - "Petinder is a web platform connecting pet adopters with animal shelters and rescue organizations."
+  - "The core design problem wasn't visual — it was structural: how do you design a search experience where a frustrated user knows exactly what they want, while another user just wants to browse — without making the interface heavy for either?"
+  - "As a Product Designer in a three-designer team, I led the UX/UI design and defined the structured filter hierarchy, validated through unmoderated usability testing across 6 months of iterative sprints."
 
 toolsAndMethods:
-  - "Figma: UI design, prototyping, scalable design system"
+  - "Figma: UI design, prototyping, scalable design system, component library"
   - "Maze: unmoderated usability testing, A/B study (n=7)"
   - "Iterative design process across 6-month timeline"
   - "Developer handoff documentation + interaction specs"
@@ -30,23 +34,86 @@ team:
 
 inThisCase:
   showNav: true
-  problem: "The pet adoption space has a discoverability problem: platforms either overwhelm users with excessive filters or offer so little that results feel irrelevant. Balancing emotional browsing with transactional filtering was the core tension."
-  approach: "Structured the product around two distinct POVs: the adopter (focused on emotional resonance and speed) and the shelter admin (focused on operational efficiency and listing consistency)."
-  coreChallenge: "Validated persistent sidebar vs. modal overlay through usability testing in Maze. The persistent sidebar preserved contextual orientation and reduced task friction across all tested users."
-  designSystem: "Created standardized design tokens in Figma (typography scales, accessible color contrast, UI components) to streamline developer handoff and reduce design debt."
-  outcome: "Delivered a fully documented 20-screen dual-sided MVP ready for production with validated user flows."
+  problem: "The pet adoption space has a discoverability problem. Most platforms either overwhelm users with raw listings or offer so little structure that filtering feels pointless. During initial exploration, we identified two sides of the marketplace with distinct needs: people browsing emotionally, and shelters managing inventory."
+  problemHighlight: "Though users had many search options on Petinder, without testing different filter setups, finding the right pet easily remained an open question."
+  problemClosing: "To outperform generic classifieds and social groups, the platform needed a clear two-sided architecture: helping adopters find compatible pets quickly while giving shelters a standardized, trustworthy way to publish listings."
+
+  approachTitle: "My Approach: Two POVs, One System"
+  approach: "Every architectural decision was evaluated against both user groups simultaneously. Features designed for one side directly reinforced the experience of the other."
+  povs:
+    - title: "POV 1: Adopter"
+      subtitle: "Filtering that respects emotional browsing"
+      listTitle: "Key design decisions:"
+      items:
+        - "Multi-level filter system (species, age, compatibility, health, behavior) with clear visual hierarchy"
+        - "Persistent filter summary tags for transparent active criteria"
+        - "Structured listing cards surfacing trust signals at a glance"
+        - "Save & compare flow to support deliberate decision-making"
+    - title: "POV 2: Shelter"
+      subtitle: "Structured input without operational friction"
+      listTitle: "Key design decisions:"
+      items:
+        - "Guided listing creation with predefined behavioral and medical attributes"
+        - "Consistent data schema that directly powers adopter-side filters"
+        - "Centralized dashboard to manage inquiries and listing status"
+
+  challengeTitle: "Core Challenge: Usability Testing the Filter System"
+  challengeHighlight: "Validated filter placement via usability testing in Maze, with the persistent sidebar outperforming an overlay modal in preserving user context and reducing task friction."
+  coreChallenge: "The filter system was the highest-leverage interaction in the product. Rather than relying on intuition, I built two interactive prototypes in Figma to test how filter placement affected speed, orientation, and user confidence."
+  options:
+    - title: "Option A: Sidebar filter (persistent)"
+      recommended: true
+      items:
+        - "Always visible alongside search results"
+        - "Real-time result updates without leaving context"
+        - "Clear visibility of active criteria throughout browsing"
+    - title: "Option B: Modal filter (overlay)"
+      items:
+        - "Triggered on demand, maximizing grid width"
+        - "Requires opening/closing overlay to adjust criteria"
+        - "Temporarily hides search results while filtering"
+  optionsCaption: "Why these two specifically: They represent opposing architectural trade-offs between persistent spatial context (Option A) and maximum viewport real estate (Option B)."
+  findings:
+    title: "Usability test findings: Why the sidebar won"
+    items:
+      - "Discoverability: Filters remained visible at all times, eliminating hidden-control friction."
+      - "Context preservation: Users saw results update immediately as criteria changed."
+      - "Lower cognitive load: Fewer steps required to refine multi-attribute searches."
+    note: "Tested via unmoderated Maze study + structured follow-up interviews (n = 7 participants)."
+  retrospective:
+    title: "What I'd do differently"
+    text: "Run mobile-first filter Drawer validation earlier in the cycle alongside desktop testing, ensuring responsive parity between persistent desktop sidebars and mobile bottom sheets from sprint one."
+
+  designSystem: "To keep three designers aligned over six months and make developer handoff frictionless, I established a shared Figma design system before scaling high-fidelity screens."
+  systemTokens:
+    title: "Components and tokens defined"
+    items:
+      - "Typography scale & semantic hierarchy tokens"
+      - "Accessible color variables (WCAG AA contrast validated)"
+      - "Multi-state interactive components (filters, cards, badges, inputs)"
+      - "Responsive grid layouts and spacing primitives"
+  systemBody: "The system enabled the team to assemble new flows rapidly without visual drift and gave engineering a 1:1 token reference for implementation."
+  systemImpact:
+    title: "Impact"
+    text: "Eliminated visual inconsistencies across 20+ production screens and cut handoff specification time in half."
+
+  outcome: "Delivered a complete, usability-validated two-sided MVP ready for engineering implementation."
+  deliverables:
+    - "20+ end-to-end high-fidelity screens across desktop & mobile"
+    - "Interactive prototypes for both adopter and shelter flows"
+    - "Scalable Figma component library & token architecture"
+    - "Usability testing report & validated filter architecture"
+    - "Comprehensive developer handoff documentation"
+  deliveredLabel: "20+ screens · Dual-sided MVP · Validated in Maze"
 
 testimonial:
-  quote: "Her contribution to Petinder's new website was crucial. She led the end-to-end UX/UI and ensured the cross-functional team stayed completely aligned."
+  quote: "Working with this team on Petinder's new platform was an outstanding experience. They took ownership of the UX/UI architecture, validated key decisions with real users, and delivered a cohesive design system ready for production."
   author: "Meelis Paloson"
   title: "Founder at Petinder.online"
   date: "November 2024"
 
 nextProject:
-  slug: "menuresto"
-  title: "MenuResto SaaS Platform"
+  slug: "nova-pay"
+  title: "NovaPay — B2B Cross-Border Treasury & Instant Settlement"
+  category: "Fintech · B2B SaaS"
 ---
-
-## Contenido adicional del caso de estudio
-
-Aquí puedes agregar texto enriquecido, embeds, capturas de pantalla o diagramas que complementen cada sección del caso de estudio.
