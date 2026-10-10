@@ -1,0 +1,46 @@
+---
+import { ArrowUpRight } from '@lucide/astro';
+
+interface Props {
+  index: number;
+  title: string;
+  category?: string;
+  timeline?: string;
+  href: string;
+}
+
+const { index, title, category, timeline, href } = Astro.props;
+const formattedIndex = index.toString().padStart(2, '0');
+---
+
+<a
+  href={href}
+  target="_blank"
+  rel="noopener noreferrer"
+  class="group relative flex items-center justify-between py-5 px-3 -mx-3 rounded-lg border-b border-[var(--color-border-subtle)] transition-all duration-300 hover:bg-[var(--color-surface-subtle)]"
+>
+  <div class="flex items-center gap-6 md:gap-8">
+    <span class="font-mono text-xs text-[var(--color-ink-muted)] group-hover:text-black transition-colors">
+      {formattedIndex}
+    </span>
+    <span class="text-base sm:text-lg font-medium tracking-tight group-hover:translate-x-1.5 transition-transform duration-300 ease-[var(--ease-snappy)]">
+      {title}
+    </span>
+  </div>
+
+  <div class="flex items-center gap-4">
+    {category && (
+      <span class="hidden sm:inline-block text-xs font-mono text-[var(--color-ink-secondary)]">
+        {category}
+      </span>
+    )}
+    {timeline && (
+      <span class="hidden md:inline-block text-xs font-mono text-[var(--color-ink-muted)]">
+        {timeline}
+      </span>
+    )}
+    <div class="p-1 rounded-full border border-transparent group-hover:border-[var(--color-border-subtle)] group-hover:bg-white transition-all">
+      <ArrowUpRight class="w-4 h-4 text-[var(--color-ink-muted)] group-hover:text-black group-hover:rotate-45 transition-all duration-300" />
+    </div>
+  </div>
+</a>

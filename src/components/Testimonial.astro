@@ -1,0 +1,23 @@
+---
+interface Props {
+  quote?: string;
+  author?: string;
+  title?: string;
+  date?: string;
+}
+
+const { quote, author, title, date } = Astro.props;
+if (!quote || !author) return null;
+---
+
+<section id="voices" class="my-16 p-8 rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface)] relative overflow-hidden">
+  <div class="font-serif text-6xl text-neutral-200 absolute top-4 right-6 select-none leading-none">”</div>
+  {date && <p class="font-mono text-xs text-[var(--color-ink-muted)] mb-4">{date}</p>}
+  <blockquote class="text-base sm:text-lg leading-relaxed text-[var(--color-ink-primary)] mb-6 relative z-10">
+    "{quote}"
+  </blockquote>
+  <div>
+    <p class="font-medium text-sm text-[var(--color-ink-primary)]">{author}</p>
+    {title && <p class="text-xs font-mono text-[var(--color-ink-secondary)]">{title}</p>}
+  </div>
+</section>

@@ -1,0 +1,24 @@
+---
+import { getCollection, render } from 'astro:content';
+import CaseStudyLayout from '../../layouts/CaseStudyLayout.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects', ({ id }) => id.startsWith('es/'));
+  
+  return projects.map((project) => {
+    // Convierte 'es/petinder-online' a 'petinder-online'
+    const slug = project.id.replace('es/', '').replace(/\.mdx?$/, '');
+    return {
+      params: { slug },
+      props: { project },
+    };
+  });
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+---
+
+<CaseStudyLayout project={project}>
+  <Content />
+</CaseStudyLayout>

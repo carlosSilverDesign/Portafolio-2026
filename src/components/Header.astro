@@ -1,0 +1,68 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import LanguagePicker from './LanguagePicker.astro';
+import { Copy, Check } from '@lucide/astro';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+interface Props {
+  email?: string;
+}
+
+const { email = "tu-correo@ejemplo.com" } = Astro.props;
+---
+
+<header class="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-12 border-b border-[var(--color-border-subtle)]">
+  <div class="flex items-center gap-4">
+    <a href={lang === 'es' ? '/' : `/${lang}`} class="font-medium text-base tracking-tight hover:opacity-70 transition-opacity">
+      Tu Nombre <span class="text-[var(--color-ink-muted)] text-sm font-normal">/ Product Architect</span>
+    </a>
+  </div>
+
+  <div class="flex items-center flex-wrap gap-3">
+    <!-- Pill de Disponibilidad Mitacore Style -->
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[var(--color-border-subtle)] bg-[var(--color-surface)] text-xs font-mono">
+      <span class="relative flex h-2 w-2">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--color-accent-emerald)] opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-[var(--color-accent-emerald)]"></span>
+      </span>
+      <span class="text-[var(--color-ink-secondary)]">{t('status.available')}</span>
+    </div>
+
+    <!-- Selector de Idioma -->
+    <LanguagePicker />
+
+    <!-- Botón Copiar Email -->
+    <button
+      id="copy-email-btn"
+      data-email={email}
+      class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[var(--color-border-subtle)] bg-[var(--color-surface)] text-xs font-mono hover:border-black transition-colors cursor-pointer"
+      title={t('footer.copyEmail')}
+    >
+      <Copy class="w-3.5 h-3.5 text-[var(--color-ink-muted)] group-hover:text-black transition-colors" />
+      <span id="copy-email-text" class="text-[var(--color-ink-secondary)] group-hover:text-black">{t('footer.copyEmail')}</span>
+    </button>
+  </div>
+</header>
+
+<script>
+  const btn = document.getElementById('copy-email-btn');
+  const text = document.getElementById('copy-email-text');
+
+  if (btn && text) {
+    btn.addEventListener('click', async () => {
+      const email = btn.getAttribute('data-email') || '';
+      try {
+        await navigator.clipboard.writeText(email);
+        const originalText = text.innerText;
+        text.innerText = '✓ Copiado';
+        setTimeout(() => {
+          text.innerText = originalText;
+        }, 2000);
+      } catch (err) {
+        console.error('Error al copiar:', err);
+      }
+    });
+  }
+</script>

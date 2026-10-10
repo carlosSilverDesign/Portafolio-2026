@@ -1,0 +1,48 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+interface Props {
+  inThisCase?: {
+    showNav?: boolean;
+    problem?: string;
+    approach?: string;
+    coreChallenge?: string;
+    designSystem?: string;
+    outcome?: string;
+  };
+  hasTestimonial?: boolean;
+}
+
+const { inThisCase, hasTestimonial } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+if (!inThisCase || inThisCase.showNav === false) return null;
+
+const items = [
+  { id: 'the-problem', label: t('case.nav.problem'), exists: Boolean(inThisCase.problem) },
+  { id: 'my-approach', label: t('case.nav.approach'), exists: Boolean(inThisCase.approach) },
+  { id: 'core-challenge', label: t('case.nav.challenge'), exists: Boolean(inThisCase.coreChallenge) },
+  { id: 'scalable-design-system', label: t('case.nav.system'), exists: Boolean(inThisCase.designSystem) },
+  { id: 'outcome', label: t('case.nav.outcome'), exists: Boolean(inThisCase.outcome) },
+  { id: 'voices', label: t('case.nav.voices'), exists: hasTestimonial },
+].filter(item => item.exists);
+---
+
+{items.length > 0 && (
+  <nav aria-label="Secciones del proyecto" class="my-10 p-5 rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface)]">
+    <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-ink-muted)] mb-3">
+      {t('case.nav.title')}
+    </p>
+    <div class="flex flex-wrap gap-2">
+      {items.map(item => (
+        <a
+          href={`#${item.id}`}
+          class="px-3 py-1 rounded-full text-xs font-mono border border-[var(--color-border-subtle)] hover:border-black hover:bg-neutral-100 transition-colors"
+        >
+          {item.label}
+        </a>
+      ))}
+    </div>
+  </nav>
+)}

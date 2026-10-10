@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import ProjectRow from '../../components/ProjectRow.astro';
+import { getCollection } from 'astro:content';
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations('en');
+
+const projects = await getCollection('projects', ({ id }) => id.startsWith('en/'));
+projects.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+---
+
+<BaseLayout title="Your Name — Product Architect & Designer">
+  <div class="space-y-16">
+    <Header email="tu-correo@ejemplo.com" />
+
+    <section class="space-y-6 pt-4">
+      <h1 class="text-3xl sm:text-5xl md:text-6xl font-medium tracking-tight text-[var(--color-ink-primary)] leading-[1.1]">
+        Designing high-conversion interfaces, scalable design systems and high-performance digital products.
+      </h1>
+      <p class="text-base sm:text-lg text-[var(--color-ink-secondary)] max-w-2xl leading-relaxed">
+        Product Designer & Digital Architect bridging the gap between intuitive user experiences, refined motion and modern frontend engineering.
+      </p>
+    </section>
+
+    <section class="pt-8">
+      <div class="flex items-center justify-between pb-4 border-b border-[var(--color-border-dark)] mb-2">
+        <h2 class="font-mono text-xs uppercase tracking-wider text-[var(--color-ink-muted)]">
+          {t('section.projects')}
+        </h2>
+        <span class="font-mono text-xs text-[var(--color-ink-muted)]">
+          [{projects.length}]
+        </span>
+      </div>
+
+      <div class="divide-y divide-[var(--color-border-subtle)]">
+        {projects.map((proj, idx) => {
+          const slug = proj.id.replace('en/', '').replace(/\.mdx?$/, '');
+          return (
+            <ProjectRow
+              index={idx + 1}
+              title={proj.data.title}
+              category={proj.data.category}
+              timeline={proj.data.meta?.timeline}
+              href={`/en/projects/${slug}`}
+            />
+          );
+        })}
+      </div>
+    </section>
+
+    <footer class="pt-12 border-t border-[var(--color-border-subtle)] flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs text-[var(--color-ink-muted)]">
+      <p>© {new Date().getFullYear()} — {t('footer.rights')}</p>
+      <div class="flex items-center gap-4">
+        <a href="/cv-2026.pdf" target="_blank" rel="noopener noreferrer" class="hover:text-black transition-colors">
+          {t('footer.resume')}
+        </a>
+        <a href="https://linkedin.com/in/tu-perfil" target="_blank" rel="noopener noreferrer" class="hover:text-black transition-colors">
+          LinkedIn
+        </a>
+      </div>
+    </footer>
+  </div>
+</BaseLayout>
