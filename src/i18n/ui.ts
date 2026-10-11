@@ -29,7 +29,7 @@ const es = {
 
   // Hero
   'hero.title.line1': 'Diseño de Producto',
-  'hero.title.line2': '& Arquitectura Digital',
+  'hero.title.line2': '& Frontend',
   'hero.lead': 'Diseño productos como lo haría un dueño: primero el alcance, primero el MVP, primero el lanzamiento.',
   'hero.copy': 'Product designer y arquitecto frontend con más de 10 años lanzando productos digitales. Diseño en Figma y entrego en código, así que lo que se aprueba es exactamente lo que sale a producción: recortar el alcance, lanzar el MVP, aprender de usuarios reales y luego pulir.',
   'hero.avatarAlt': 'Retrato de Tu Nombre',
@@ -37,7 +37,7 @@ const es = {
   'hero.cta.contact': 'Contactar',
 
   // Numbers
-  'numbers.kicker': 'Números',
+  'numbers.kicker': 'Experiencia',
   'numbers.aria': 'Experiencia en números',
   'numbers.1.value': '10+',
   'numbers.1.label': 'Años en diseño & desarrollo digital',
@@ -79,7 +79,7 @@ const es = {
   'projects.empty': 'Nuevos casos de estudio en camino.',
 
   // Process
-  'process.kicker': 'Proceso',
+  'process.kicker': 'Cómo trabajo',
   'process.title': 'Proceso de Trabajo',
   'process.1.title': 'Discovery',
   'process.1.desc': 'Objetivos, audiencia, contexto de negocio, presupuesto y el deadline real. Qué debe demostrar el producto primero, qué puede esperar y dónde se van realmente el tiempo y el dinero.',
@@ -167,7 +167,7 @@ const en: Record<UIKey, string> = {
   // Navbar
   'nav.projects': 'Projects',
   'nav.services': 'Services',
-  'nav.process': 'Process',
+  'nav.process': 'How I work',
   'nav.contact': 'Contact',
   'nav.cta': 'Start a project',
   'nav.sections': 'Page sections',
@@ -178,7 +178,7 @@ const en: Record<UIKey, string> = {
 
   // Hero
   'hero.title.line1': 'Product Design',
-  'hero.title.line2': '& Digital Architecture',
+  'hero.title.line2': '& Frontend',
   'hero.lead': 'I design products the way an owner does: scope first, MVP first, launch first.',
   'hero.copy': 'Product designer and frontend architect with 10+ years shipping digital products. I design in Figma and deliver in code, so what gets approved is exactly what goes live: cut the scope, ship the MVP, learn from real users, then polish.',
   'hero.avatarAlt': 'Portrait of Your Name',
@@ -186,7 +186,7 @@ const en: Record<UIKey, string> = {
   'hero.cta.contact': 'Start a project',
 
   // Numbers
-  'numbers.kicker': 'Numbers',
+  'numbers.kicker': 'Experience',
   'numbers.aria': 'Experience in numbers',
   'numbers.1.value': '10+',
   'numbers.1.label': 'Years in digital design & development',
@@ -228,7 +228,7 @@ const en: Record<UIKey, string> = {
   'projects.empty': 'New case studies on the way.',
 
   // Process
-  'process.kicker': 'Process',
+  'process.kicker': 'How I work',
   'process.title': 'Work Process',
   'process.1.title': 'Discovery',
   'process.1.desc': 'Goals, audience, business context, budget, and the real deadline. What the product must prove first, what can wait, and where the time and money actually go.',
